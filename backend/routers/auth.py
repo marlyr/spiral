@@ -19,15 +19,16 @@ ALGORITHM = "HS256"
 TOKEN_EXPIRES = 30
 
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/login")
-
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 def verify_pwd(plain_pwd: str, hashed_pwd: str) -> bool:
     return bcrypt.checkpw(plain_pwd.encode("utf-8"), hashed_pwd.encode("utf-8"))
 
+
 def get_pwd_hash(password: str) -> str:
     return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
@@ -59,6 +60,7 @@ def verify_token(token: str) -> TokenData:
                 headers={"WWWW-Authenticate": "Bearer"}
             )
 
+
 def get_current_user(token: str = Depends(oauth2_bearer), db: Session = Depends(get_db)):
     token_data = verify_token(token)
     user = db.query(User).filter(User.email == token_data.email).first()
@@ -71,7 +73,7 @@ def get_current_user(token: str = Depends(oauth2_bearer), db: Session = Depends(
     return user
 
     
-@router.post("/register", response_model=UserResponse)
+@router.post("/register", response_model=Token)
 def register(user: UserCreate, db: Session = Depends(get_db)):
     if db.query(User).filter(User.email == user.email).first():
         raise HTTPException(
@@ -85,27 +87,32 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         hashed_password=hashed_password
     )
     db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
+    db.flush()
     
     all_skills = db.query(Skill).all()
     for skill in all_skills:
         status_row = UserSkillStatus(
-            user_id=db_user.id,
-            skill_id=skill.id
+            user=db_user,
+            skill=skill
         )
         db.add(status_row)
     db.commit()
 
-    return db_user
+    access_token_expires = timedelta(minutes=TOKEN_EXPIRES)
+    access_token = create_access_token(
+        data={"sub": user.email},
+        expires_delta=access_token_expires
+    )
+    return{"access_token": access_token, "token_type": "bearer"}
+
     
 @router.post("/login", response_model=Token)
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == form_data.username).first()
     if user is None or not verify_pwd(form_data.password, user.hashed_password):
         raise HTTPException(
-            status_code=404,
-            detail="Incorrect password"
+            status_code=401,
+            detail="Could not verify credentials"
         )
     
     access_token_expires = timedelta(minutes=TOKEN_EXPIRES)
@@ -113,7 +120,8 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
         data={"sub": user.email},
         expires_delta=access_token_expires
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+    return{"access_token": access_token, "token_type": "bearer"}
+
 
 @router.get("/profile", response_model=UserResponse)
 def get_profile(current_user: User = Depends(get_current_user)):
