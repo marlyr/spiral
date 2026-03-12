@@ -122,11 +122,6 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     )
     return{"access_token": access_token, "token_type": "bearer"}
 
-
-@router.get("/profile", response_model=UserResponse)
-def get_profile(current_user: User = Depends(get_current_user)):
-    return current_user
-
 @router.get("/verify-token")
 def verify_token_endpoint(current_user: User = Depends(get_current_user)):
     return {
@@ -137,11 +132,3 @@ def verify_token_endpoint(current_user: User = Depends(get_current_user)):
         }
     }
 
-@router.patch("/track", response_model=UserResponse)
-def switch_track(track_update: TrackUpdate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.id == current_user.id).first()
-    user.active_track = track_update.active_track
-    db.commit()
-    db.refresh(user)
-    return user
-    
