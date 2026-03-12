@@ -1,0 +1,25 @@
+import type { Skill } from "@/types";
+import { KanbanColumn } from "@/components/kanban-column";
+
+
+
+// export function KanbanBoard({ skills }: { skills: Skill }) (
+
+// )
+
+export function KanbanBoard({ skills, level }: {skills: Skill[], level: number}) {
+    const notStarted = skills.filter((skill) => skill.status == "not_started");
+    const workingOn = skills.filter((skill) => skill.status == "working_on");
+    const completed = skills.filter((skill) => skill.status == "completed");
+
+  return (
+    <div className="flex flex-col gap-2">
+        <h2>Level {level}</h2>
+        <div className="grid grid-cols-3 gap-4">
+            <KanbanColumn skills={notStarted} status="not_started" />
+            <KanbanColumn skills={workingOn} status="working_on" />
+            <KanbanColumn skills={completed} status="completed" />
+        </div>
+    </div>
+  )
+}

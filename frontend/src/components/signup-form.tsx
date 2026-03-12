@@ -54,7 +54,7 @@ export function SignupForm({
       const response = await axios.post('/auth/register', data);
       const { access_token } = response.data;
       localStorage.setItem('jwtToken', access_token); 
-      // navigate('/dashboard');
+      navigate('/dashboard');
     } catch (error: any) {
       if (error.response && error.response.status === 400) {
         setEmailError(true);

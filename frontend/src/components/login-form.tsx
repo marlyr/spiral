@@ -38,7 +38,7 @@ export function LoginForm({
       const response = await axios.post('/auth/login', data);
       const { access_token } = response.data;
       localStorage.setItem('jwtToken', access_token); 
-      // navigate('/dashboard')
+      navigate('/dashboard')
     } catch (error: any) {
       setGeneralError(true);
     }
