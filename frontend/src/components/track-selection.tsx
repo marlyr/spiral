@@ -1,21 +1,10 @@
 import { useState } from 'react'
+import { useNavigate } from "react-router-dom";
 import placeholder from '@/assets/placeholder.png';
 import type { SkatingTrack } from "@/types";
 import axios from 'axios'
+import { TrackCard } from '@/components/track-card';
 
-
-function TrackCard({ image, track, onSelect }: { image: any, track: SkatingTrack, onSelect: (track: SkatingTrack) => void }) {
-  return (
-    <div onClick={() => onSelect(track)} className="flex flex-col items-center">
-    <img
-      src={image}
-      alt={track}
-      className="h-64 w-48 object-contain cursor-pointer rounded-lg transition-transform hover:scale-105"
-    />
-    <p className="text-lg -mt-8">{track}</p>
-  </div>
-  );
-}
 
 const tracks = [
   { id: 1, name: "basic" as SkatingTrack, image: placeholder },
@@ -26,6 +15,7 @@ const tracks = [
 
 export function TrackSelection() {
   const [generalError, setGeneralError] = useState(false)
+  const navigate = useNavigate()
 
   async function handleSelect(track: SkatingTrack) {
     setGeneralError(false);
@@ -53,4 +43,3 @@ export function TrackSelection() {
     </div>
   );
 }
-
