@@ -13,6 +13,7 @@ class UserResponse(BaseModel):
     
     model_config = {"from_attributes": True}
 
+
 class Token(BaseModel):
     access_token: str
     token_type: str
@@ -20,17 +21,22 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     email: Optional[str] = None
 
+
 class SkillUpdate(BaseModel):
     status: SkillStatus
 
-class SkillResponse(BaseModel):
+
+class SkillBase(BaseModel):
     id: int
     name: str
     track: SkatingTrack
     level: int
     bonus: bool
-    status: Optional[SkillStatus] = None
-    
+
+class UserSkillStatusResponse(BaseModel):
+    status: SkillStatus
+    skill: SkillBase
+
     model_config = {"from_attributes": True}
 
 class TrackUpdate(BaseModel):

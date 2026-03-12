@@ -1,21 +1,23 @@
 
-export type SkatingTrack = "basic" | "adult" | "pre_freeskate" | "freeskate"
+export type SkatingTrack = "basic" | "adult" | "pre_freeskate" | "freeskate";
 
-export type SkillStatus = "not_started" | "working_on" | "completed"
+export type SkillStatus = "not_started" | "working_on" | "completed";
 
 export interface User {
     id: number
     email: string
     active_track: string | null
-  }
+  };
   
-export interface Skill {
-  id: number
-  name: string
-  track: string
-  level: number
-  bonus: boolean
-  status: SkillStatus
+export type Skill = {
+  status: "not_started" | "working_on" | "completed";
+  skill: {
+    id: number;
+    name: string;
+    track: string;
+    level: number;
+    bonus: boolean;
+  };
 }
 
 export interface DiaryEntry {
@@ -24,5 +26,5 @@ export interface DiaryEntry {
   category: string | null
   text: string
   date: string
-}
+};
 

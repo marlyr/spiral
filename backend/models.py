@@ -43,7 +43,9 @@ class UserSkillStatus(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     skill_id = Column(Integer, ForeignKey("skills.id"), nullable=False)
-    status = Column(Enum(SkillStatus), default=SkillStatus.not_started)
+    status = Column(
+        Enum(SkillStatus), default=SkillStatus.not_started, server_default=SkillStatus.not_started.value, nullable=False
+    )
 
     user = relationship("User", back_populates="skill_statuses")
     skill = relationship("Skill")
