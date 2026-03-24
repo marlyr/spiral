@@ -2,11 +2,6 @@ import type { Skill } from "@/types";
 import { KanbanColumn } from "@/components/kanban-column";
 
 
-
-// export function KanbanBoard({ skills }: { skills: Skill }) (
-
-// )
-
 export function KanbanBoard({ skills, level }: {skills: Skill[], level: number}) {
     const notStarted = skills.filter((skill) => skill.status == "not_started");
     const workingOn = skills.filter((skill) => skill.status == "working_on");

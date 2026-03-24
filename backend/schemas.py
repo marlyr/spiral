@@ -1,10 +1,11 @@
 from pydantic import BaseModel
 from typing import Optional
-from models import SkatingTrack, SkillStatus
+from models import SkatingTrack, SkillStatus, DiaryEntryCategory
 
 class UserCreate(BaseModel):
     email: str
     password: str
+
 
 class UserResponse(BaseModel):
     id: int
@@ -17,6 +18,7 @@ class UserResponse(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
 
 class TokenData(BaseModel):
     email: Optional[str] = None
@@ -35,9 +37,35 @@ class SkillBase(BaseModel):
 
 class UserSkillStatusResponse(BaseModel):
     status: SkillStatus
-    skill: SkillBase
+    id: int
+    name: str
+    track: SkatingTrack
+    level: int
+    bonus: bool
 
     model_config = {"from_attributes": True}
 
 class TrackUpdate(BaseModel):
     active_track: SkatingTrack
+
+
+class DiaryEntryCreate(BaseModel):
+    entry_name: str
+    category: Optional[DiaryEntryCategory]
+    text: str
+    date: str
+
+
+class DiaryEntryResponse(BaseModel):
+    id: int
+    entry_name: str
+    category: Optional[DiaryEntryCategory]
+    text: str
+    date: str
+
+
+class DiaryEntryUpdate(BaseModel):
+    date: Optional[str]
+    category: Optional[DiaryEntryCategory]
+    text: Optional[str]
+

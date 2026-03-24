@@ -11,13 +11,11 @@ export interface User {
   
 export type Skill = {
   status: "not_started" | "working_on" | "completed";
-  skill: {
-    id: number;
-    name: string;
-    track: string;
-    level: number;
-    bonus: boolean;
-  };
+  id: number;
+  name: string;
+  track: string;
+  level: number;
+  bonus: boolean;
 }
 
 export interface DiaryEntry {
