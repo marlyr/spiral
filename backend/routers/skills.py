@@ -30,10 +30,10 @@ def get_skills(current_user: User = Depends(get_current_user), db: Session = Dep
     ]
 
 
-@router.patch("/{skill_id}", response_model=UserSkillStatusResponse)
-def update_skill(skill_id: int, update: SkillUpdate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+@router.patch("/{user_skill_id}", response_model=UserSkillStatusResponse)
+def update_skill(user_skill_id: int, update: SkillUpdate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     status_row = db.query(UserSkillStatus).filter(
-        UserSkillStatus.skill_id == skill_id,
+        UserSkillStatus.id == user_skill_id,
         UserSkillStatus.user_id == current_user.id,
     ).first()
     
@@ -43,6 +43,14 @@ def update_skill(skill_id: int, update: SkillUpdate, current_user: User = Depend
     status_row.status = update.status
     db.commit()
     db.refresh(status_row)
+    
+    return {
+            "status": status_row.status,
+            "id": status_row.id,
+            "name": status_row.skill.name,
+            "track": status_row.skill.track,
+            "level": status_row.skill.level,
+            "bonus": status_row.skill.bonus,
+        }
 
-    return status_row
     
