@@ -1,13 +1,13 @@
-import axios from 'axios'
+import axios from "axios";
 
-const api = axios.create()
+const api = axios.create();
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('jwtToken')
+  const token = localStorage.getItem("jwtToken");
   if (token) {
-    config.headers.Authorization = `Bearer ${token}`
+    config.headers.Authorization = `Bearer ${token}`;
   }
-  return config
-})
+  return config;
+});
 
-export default api
+export default api;

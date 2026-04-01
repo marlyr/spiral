@@ -5,5 +5,5 @@ export function SkillCard({ skill }: { skill: Skill }) {
     <div className="w-full bg-card rounded-md py-2 px-4 flex items-start">
       <p className="line-clamp-3">{skill.name}</p>
     </div>
-  )
+  );
 }

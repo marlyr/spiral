@@ -1,10 +1,9 @@
-import { useState } from 'react'
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import placeholder from '@/assets/placeholder.png';
+import placeholder from "@/assets/placeholder.png";
 import type { SkatingTrack } from "@/types";
-import axios from 'axios'
-import { TrackCard } from '@/components/track-card';
-
+import axios from "axios";
+import { TrackCard } from "@/components/track-card";
 
 const tracks = [
   { id: 1, name: "basic" as SkatingTrack, image: placeholder },
@@ -14,18 +13,22 @@ const tracks = [
 ];
 
 export function TrackSelection() {
-  const [generalError, setGeneralError] = useState(false)
-  const navigate = useNavigate()
+  const [generalError, setGeneralError] = useState(false);
+  const navigate = useNavigate();
 
   async function handleSelect(track: SkatingTrack) {
     setGeneralError(false);
     console.log(track);
     try {
-      const token = localStorage.getItem('jwtToken')
-      await axios.patch('/users/track', { active_track: track }, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
-      navigate('/dashboard')
+      const token = localStorage.getItem("jwtToken");
+      await axios.patch(
+        "/users/track",
+        { active_track: track },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+      navigate("/dashboard");
     } catch (error: any) {
       setGeneralError(true);
     }
@@ -35,11 +38,20 @@ export function TrackSelection() {
     <div className="flex flex-col items-center justify-center min-h-screen gap-8">
       <h1 className="text-5xl font-bold">Choose your track</h1>
       <div className="flex flex-row gap-8">
-        {tracks.map(track => (
-          <TrackCard key={track.id} image={track.image} track={track.name} onSelect={handleSelect} />
+        {tracks.map((track) => (
+          <TrackCard
+            key={track.id}
+            image={track.image}
+            track={track.name}
+            onSelect={handleSelect}
+          />
         ))}
       </div>
-      {generalError && <p className="text-red-500 text-sm">Something went wrong, please try again</p>}
+      {generalError && (
+        <p className="text-red-500 text-sm">
+          Something went wrong, please try again
+        </p>
+      )}
     </div>
   );
 }
