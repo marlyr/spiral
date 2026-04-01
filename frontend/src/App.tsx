@@ -1,14 +1,15 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom"
-import Login from "@/pages/Login"
-import Register from "@/pages/Register"
-import { ProtectedRoute } from "@/components/protected-route"
-import { TrackSelection } from "@/components/track-selection"
-import { Dashboard } from "./components/dashboard"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Login from "@/pages/Login";
+import Register from "@/pages/Register";
+import { ProtectedRoute } from "@/components/protected-route";
+import { TrackSelection } from "@/components/track-selection";
+import { Dashboard } from "./components/dashboard";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route
@@ -17,19 +18,19 @@ function App() {
             <ProtectedRoute>
               <TrackSelection />
             </ProtectedRoute>
-            }
-          />
+          }
+        />
         <Route
           path="/dashboard"
           element={
             <ProtectedRoute>
               <Dashboard />
             </ProtectedRoute>
-            }
-          />
+          }
+        />
       </Routes>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;
