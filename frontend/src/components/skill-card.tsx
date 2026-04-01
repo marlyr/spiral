@@ -1,10 +1,10 @@
-import type { Skill, SkillStatus } from "@/types";
+import type { UserSkill, SkillStatus } from "@/types";
 
 export function SkillCard({
   skill,
   onSkillStatusChange,
 }: {
-  skill: Skill;
+  skill: UserSkill;
   onSkillStatusChange: (
     skillId: number,
     newStatus: SkillStatus,

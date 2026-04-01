@@ -1,4 +1,4 @@
-import type { Skill, SkillStatus } from "@/types";
+import type { UserSkill, SkillStatus } from "@/types";
 import { KanbanColumn } from "@/components/kanban-column";
 
 export function KanbanBoard({
@@ -6,7 +6,7 @@ export function KanbanBoard({
   level,
   onSkillStatusChange,
 }: {
-  skills: Skill[];
+  skills: UserSkill[];
   level: number;
   onSkillStatusChange: (
     skillId: number,

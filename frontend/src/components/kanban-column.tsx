@@ -1,4 +1,4 @@
-import type { Skill, SkillStatus } from "@/types";
+import type { UserSkill, SkillStatus } from "@/types";
 import { SkillCard } from "@/components/skill-card";
 
 export function KanbanColumn({
@@ -6,7 +6,7 @@ export function KanbanColumn({
   status,
   onSkillStatusChange,
 }: {
-  skills: Skill[];
+  skills: UserSkill[];
   status: SkillStatus;
   onSkillStatusChange: (
     skillId: number,

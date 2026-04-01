@@ -1,10 +1,10 @@
-import type { Skill, SkillStatus } from "@/types";
+import type { UserSkill, SkillStatus } from "@/types";
 import { KanbanBoard } from "@/components/kanban-board";
 import { useState, useEffect } from "react";
 import api from "@/lib/api";
 
 export function KanbanView() {
-  const [skills, setSkills] = useState<Skill[]>([]);
+  const [skills, setSkills] = useState<UserSkill[]>([]);
   const [fetchError, setFetchError] = useState(false);
 
   useEffect(() => {

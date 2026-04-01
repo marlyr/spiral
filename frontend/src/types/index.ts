@@ -8,7 +8,7 @@ export interface User {
   active_track: string | null;
 }
 
-export type Skill = {
+export type UserSkill = {
   status: "not_started" | "working_on" | "completed";
   id: number;
   name: string;
