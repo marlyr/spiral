@@ -4,9 +4,14 @@ import { SkillCard } from "@/components/skill-card";
 export function KanbanColumn({
   skills,
   status,
+  onSkillStatusChange,
 }: {
   skills: Skill[];
   status: SkillStatus;
+  onSkillStatusChange: (
+    skillId: number,
+    newStatus: SkillStatus,
+  ) => Promise<void>;
 }) {
   const statusLabels = {
     not_started: "Not Started",
@@ -18,7 +23,11 @@ export function KanbanColumn({
     <div className="flex flex-col bg-muted p-4 gap-2">
       <h2>{statusLabels[status]}</h2>
       {skills.map((skill) => (
-        <SkillCard key={skill.id} skill={skill} />
+        <SkillCard
+          key={skill.id}
+          skill={skill}
+          onSkillStatusChange={onSkillStatusChange}
+        />
       ))}
     </div>
   );
