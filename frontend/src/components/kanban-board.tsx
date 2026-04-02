@@ -5,11 +5,9 @@ import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
 
 export function KanbanBoard({
   skills,
-  level,
   onSkillStatusChange,
 }: {
   skills: UserSkill[];
-  level: number;
   onSkillStatusChange: (
     skillId: number,
     newStatus: SkillStatus,
@@ -28,7 +26,6 @@ export function KanbanBoard({
 
   return (
     <div className="flex flex-col gap-2">
-      <h2>Level {level}</h2>
       <DragDropProvider onDragEnd={handleDragEnd}>
         <div className="grid grid-cols-3 gap-4">
           <KanbanColumn skills={notStarted} status="not_started" />
