@@ -53,6 +53,7 @@ export function KanbanView() {
       return next;
     });
   };
+
   const toggleAll = () => {
     const allCollapsed = openLevels.size === 0;
     if (allCollapsed) {
@@ -64,27 +65,40 @@ export function KanbanView() {
     <>
       {fetchError && <h2>Something went wrong</h2>}
       <div>
-        <button onClick={toggleAll}>
+        <button
+          onClick={toggleAll}
+          className="mb-4 px-4 py-1.5 rounded-full border border-border text-[12px] text-muted-foreground bg-transparent hover:bg-muted transition-all"
+        >
           {openLevels.size === 0 ? "Expand All" : "Collapse All"}
         </button>
         {levels.map((level) => (
           <Collapsible
-            className="rounded-md data-[state=open]:bg-muted"
+            key={level}
+            className="rounded-xl border border-border mb-3 overflow-hidden"
             open={openLevels.has(level)}
             onOpenChange={(isOpen) => toggleLevel(isOpen, level)}
           >
-            <CollapsibleTrigger className="flex items-center">
-              <h2>Level {level}</h2>
+            <CollapsibleTrigger className="w-full flex items-center justify-between px-4 py-3 hover:bg-muted/50 transition-colors">
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[var(--text2)]">
+                  Level {level}
+                </span>
+                <span className="text-[10px] text-muted-foreground">
+                  ({skills.filter((s) => s.level === level).length})
+                </span>
+              </div>
               <ChevronRight
-                className={openLevels.has(level) ? "rotate-90" : ""}
+                className={`w-4 h-4 text-muted-foreground transition-transform ${openLevels.has(level) ? "rotate-90" : ""}`}
               />
             </CollapsibleTrigger>
             <CollapsibleContent>
-              <KanbanBoard
-                key={level}
-                skills={skills.filter((s) => s.level === level)}
-                onSkillStatusChange={updateSkillStatus}
-              />
+              <div className="p-3 bg-background">
+                <KanbanBoard
+                  key={level}
+                  skills={skills.filter((s) => s.level === level)}
+                  onSkillStatusChange={updateSkillStatus}
+                />
+              </div>
             </CollapsibleContent>
           </Collapsible>
         ))}

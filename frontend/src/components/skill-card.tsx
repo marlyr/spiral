@@ -7,9 +7,9 @@ export function SkillCard({ skill }: { skill: UserSkill }) {
   return (
     <div
       ref={ref}
-      className="w-full bg-card rounded-md py-2 px-4 flex items-start"
+      className="bg-card border border-border rounded-lg px-3 py-[10px] cursor-pointer transition-all hover:shadow-md hover:-translate-y-px hover:border-[var(--border-mid)] flex items-start"
     >
-      <p className="line-clamp-3">{skill.name}</p>
+      <p className="text-[13px] font-medium text-foreground line-clamp-3">{skill.name}</p>
     </div>
   );
 }

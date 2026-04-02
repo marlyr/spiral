@@ -133,7 +133,7 @@ export function SignupForm({
                 </Field>
                 <Button type="submit">Create Account</Button>
                 <FieldDescription className="text-center">
-                  Already have an account? <a href="#">Sign in</a>
+                  Already have an account? <a href="#" className="text-primary hover:underline">Sign in</a>
                 </FieldDescription>
               </Field>
             </FieldGroup>
@@ -141,8 +141,8 @@ export function SignupForm({
         </CardContent>
       </Card>
       <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
+        By clicking continue, you agree to our <a href="#" className="text-primary hover:underline">Terms of Service</a>{" "}
+        and <a href="#" className="text-primary hover:underline">Privacy Policy</a>.
       </FieldDescription>
     </div>
   );

@@ -36,7 +36,7 @@ export function TrackSelection() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen gap-8">
-      <h1 className="text-5xl font-bold">Choose your track</h1>
+      <h1 className="text-4xl font-semibold tracking-tight">Choose your track</h1>
       <div className="flex flex-row gap-8">
         {tracks.map((track) => (
           <TrackCard

@@ -16,7 +16,7 @@ export function TrackCard({
         alt={track}
         className="h-64 w-48 object-contain cursor-pointer rounded-lg transition-transform hover:scale-105"
       />
-      <p className="text-lg -mt-8">{track}</p>
+      <p className="text-[15px] font-medium text-foreground -mt-8">{track}</p>
     </div>
   );
 }

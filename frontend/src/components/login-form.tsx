@@ -74,7 +74,7 @@ export function LoginForm({
                   <FieldLabel htmlFor="password">Password</FieldLabel>
                   <a
                     href="#"
-                    className="ml-auto text-sm underline-offset-4 hover:underline"
+                    className="ml-auto text-sm text-primary underline-offset-4 hover:underline"
                   >
                     Forgot your password?
                   </a>
@@ -98,7 +98,7 @@ export function LoginForm({
                 </Button>
                 <FieldDescription className="text-center">
                   Don&apos;t have an account?{" "}
-                  <Link to="/register">Sign up</Link>
+                  <Link to="/register" className="text-primary hover:underline">Sign up</Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>
