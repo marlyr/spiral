@@ -1,6 +1,8 @@
 import type { UserSkill, SkillStatus } from "@/types";
 import { KanbanColumn } from "@/components/kanban-column";
 
+import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
+
 export function KanbanBoard({
   skills,
   level,
@@ -17,26 +19,23 @@ export function KanbanBoard({
   const workingOn = skills.filter((skill) => skill.status == "working_on");
   const completed = skills.filter((skill) => skill.status == "completed");
 
+  const handleDragEnd: DragEndEvent = (event) => {
+    if (!event.operation.source || !event.operation.target) return;
+    const skillId = event.operation.source.id as number;
+    const newStatus = event.operation.target.id as SkillStatus;
+    onSkillStatusChange(skillId, newStatus);
+  };
+
   return (
     <div className="flex flex-col gap-2">
       <h2>Level {level}</h2>
-      <div className="grid grid-cols-3 gap-4">
-        <KanbanColumn
-          skills={notStarted}
-          status="not_started"
-          onSkillStatusChange={onSkillStatusChange}
-        />
-        <KanbanColumn
-          skills={workingOn}
-          status="working_on"
-          onSkillStatusChange={onSkillStatusChange}
-        />
-        <KanbanColumn
-          skills={completed}
-          status="completed"
-          onSkillStatusChange={onSkillStatusChange}
-        />
-      </div>
+      <DragDropProvider onDragEnd={handleDragEnd}>
+        <div className="grid grid-cols-3 gap-4">
+          <KanbanColumn skills={notStarted} status="not_started" />
+          <KanbanColumn skills={workingOn} status="working_on" />
+          <KanbanColumn skills={completed} status="completed" />
+        </div>
+      </DragDropProvider>
     </div>
   );
 }

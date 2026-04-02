@@ -1,17 +1,14 @@
 import type { UserSkill, SkillStatus } from "@/types";
 import { SkillCard } from "@/components/skill-card";
 
+import { useDroppable } from "@dnd-kit/react";
+
 export function KanbanColumn({
   skills,
   status,
-  onSkillStatusChange,
 }: {
   skills: UserSkill[];
   status: SkillStatus;
-  onSkillStatusChange: (
-    skillId: number,
-    newStatus: SkillStatus,
-  ) => Promise<void>;
 }) {
   const statusLabels = {
     not_started: "Not Started",
@@ -19,15 +16,13 @@ export function KanbanColumn({
     completed: "Completed",
   };
 
+  const { ref } = useDroppable({ id: status });
+
   return (
-    <div className="flex flex-col bg-muted p-4 gap-2">
+    <div ref={ref} className="flex flex-col bg-muted p-4 gap-2">
       <h2>{statusLabels[status]}</h2>
       {skills.map((skill) => (
-        <SkillCard
-          key={skill.id}
-          skill={skill}
-          onSkillStatusChange={onSkillStatusChange}
-        />
+        <SkillCard key={skill.id} skill={skill} />
       ))}
     </div>
   );
