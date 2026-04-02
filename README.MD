@@ -2,7 +2,9 @@
 
 Website for tracking your skating skill progress through Learn to Skate tracks.
 
-This website is a work in progress!
+**Stack:** React/Typescript, Python/FastAPI
+
+This website is a work in progress! Currently just running it locally with basic dev authentication. Eventually this will be hosted publicly with proper authentication using Supabase.
 
 Currently supported tracks:
 
