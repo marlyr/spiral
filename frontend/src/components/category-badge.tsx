@@ -1,4 +1,5 @@
 import type { SkillCategory } from "@/types";
+import { Badge } from "./badge";
 
 const categoryStyles: Record<string, { bg: string; color: string }> = {
   jump: { bg: "#f6ede6", color: "#b8784e" },
@@ -8,14 +9,12 @@ const categoryStyles: Record<string, { bg: string; color: string }> = {
   foundation: { bg: "#f5e8e0", color: "#9a7060" },
 };
 
-export function CategoryBadge({ category }: { category: SkillCategory }) {
-  const pill = categoryStyles[category];
-  return (
-    <span
-      style={{ background: pill.bg, color: pill.color }}
-      className="self-start capitalize text-[10px] font-medium px-[7px] py-[2px] rounded-sm tracking-[0.02em]"
-    >
-      {category}
-    </span>
-  );
+export function CategoryBadge({
+  category,
+  style,
+}: {
+  category: SkillCategory;
+  style?: React.CSSProperties;
+}) {
+  return <Badge label={category} {...categoryStyles[category]} style={style} />;
 }
