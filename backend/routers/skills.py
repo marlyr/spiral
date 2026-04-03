@@ -25,6 +25,7 @@ def get_skills(current_user: User = Depends(get_current_user), db: Session = Dep
             "name": s.skill.name,
             "track": s.skill.track,
             "level": s.skill.level,
+            "category": s.skill.category,
             "bonus": s.skill.bonus
         } for s in user_skills
     ]
@@ -50,6 +51,7 @@ def update_skill(user_skill_id: int, update: SkillUpdate, current_user: User = D
             "name": status_row.skill.name,
             "track": status_row.skill.track,
             "level": status_row.skill.level,
+            "category": status_row.skill.category,
             "bonus": status_row.skill.bonus,
         }
 

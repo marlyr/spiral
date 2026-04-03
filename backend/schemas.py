@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
-from models import SkatingTrack, SkillStatus, DiaryEntryCategory
+from models import SkatingTrack, SkillStatus, SkillCategory
 
 class UserCreate(BaseModel):
     email: str
@@ -33,7 +33,9 @@ class SkillBase(BaseModel):
     name: str
     track: SkatingTrack
     level: int
+    category: SkillCategory
     bonus: bool
+
 
 class UserSkillStatusResponse(BaseModel):
     status: SkillStatus
@@ -41,31 +43,10 @@ class UserSkillStatusResponse(BaseModel):
     name: str
     track: SkatingTrack
     level: int
+    category: SkillCategory
     bonus: bool
 
     model_config = {"from_attributes": True}
 
 class TrackUpdate(BaseModel):
     active_track: SkatingTrack
-
-
-class DiaryEntryCreate(BaseModel):
-    entry_name: str
-    category: Optional[DiaryEntryCategory]
-    text: str
-    date: str
-
-
-class DiaryEntryResponse(BaseModel):
-    id: int
-    entry_name: str
-    category: Optional[DiaryEntryCategory]
-    text: str
-    date: str
-
-
-class DiaryEntryUpdate(BaseModel):
-    date: Optional[str]
-    category: Optional[DiaryEntryCategory]
-    text: Optional[str]
-

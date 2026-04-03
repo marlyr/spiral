@@ -15,6 +15,14 @@ class SkatingTrack(StrEnum):
     adult = "adult"
     pre_freeskate = "pre_freeskate"
     freeskate = "freeskate"
+    
+
+class SkillCategory(StrEnum):
+    foundation = "foundation"
+    edge = "edge"
+    footwork = "footwork"
+    spin = "spin"
+    jump = "jump"
 
 
 class User(Base):
@@ -35,7 +43,9 @@ class Skill(Base):
     name = Column(String, nullable=False)
     track = Column(Enum(SkatingTrack), nullable=False)
     level = Column(Integer, nullable=False)
+    category = Column(Enum(SkillCategory), nullable=False)
     bonus = Column(Boolean, nullable=False, default=False)
+
 
 class UserSkillStatus(Base):
     __tablename__ = "user_skill_statuses"
