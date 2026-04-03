@@ -2,6 +2,13 @@ export type SkatingTrack = "basic" | "adult" | "pre_freeskate" | "freeskate";
 
 export type SkillStatus = "not_started" | "working_on" | "completed";
 
+export type SkillCategory =
+  | "foundation"
+  | "edge"
+  | "footwork"
+  | "spin"
+  | "jump";
+
 export interface User {
   id: number;
   email: string;
@@ -9,11 +16,12 @@ export interface User {
 }
 
 export type UserSkill = {
-  status: "not_started" | "working_on" | "completed";
+  status: SkillStatus;
   id: number;
   name: string;
   track: string;
   level: number;
+  category: SkillCategory;
   bonus: boolean;
 };
 
