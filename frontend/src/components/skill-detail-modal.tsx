@@ -3,11 +3,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { CategoryBadge } from "./category-badge";
 import { Button } from "@/components/ui/button";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import {
+  DialogTitle,
   DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import type { UserSkill } from "@/types";
@@ -16,6 +17,9 @@ import { StatusBadge } from "@/components/status-badge";
 export function SkillDetailModal({ skill }: { skill: UserSkill }) {
   return (
     <DialogContent className="flex max-h-[min(600px,80vh)] flex-col gap-0 p-0 sm:max-w-md">
+      <DialogTitle asChild>
+        <VisuallyHidden>{skill.name}</VisuallyHidden>
+      </DialogTitle>
       <DialogDescription asChild>
         <div className="p-6">
           <div className="[&_strong]:text-foreground space-y-4 [&_strong]:font-semibold">
