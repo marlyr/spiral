@@ -23,6 +23,7 @@ export type UserSkill = {
   level: number;
   category: SkillCategory;
   bonus: boolean;
+  notes: string | null;
 };
 
 export interface DiaryEntry {

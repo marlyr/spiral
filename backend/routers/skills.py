@@ -26,7 +26,8 @@ def get_skills(current_user: User = Depends(get_current_user), db: Session = Dep
             "track": s.skill.track,
             "level": s.skill.level,
             "category": s.skill.category,
-            "bonus": s.skill.bonus
+            "bonus": s.skill.bonus,
+            "notes": s.notes,
         } for s in user_skills
     ]
 
@@ -41,10 +42,13 @@ def update_skill(user_skill_id: int, update: SkillUpdate, current_user: User = D
     if status_row is None:
         raise HTTPException(status_code=404, detail="Skill not found")
 
-    status_row.status = update.status
+    if update.status is not None:
+        status_row.status = update.status
+    if update.notes is not None:
+        status_row.notes = update.notes
     db.commit()
     db.refresh(status_row)
-    
+
     return {
             "status": status_row.status,
             "id": status_row.id,
@@ -53,6 +57,7 @@ def update_skill(user_skill_id: int, update: SkillUpdate, current_user: User = D
             "level": status_row.skill.level,
             "category": status_row.skill.category,
             "bonus": status_row.skill.bonus,
+            "notes": status_row.notes,
         }
 
     

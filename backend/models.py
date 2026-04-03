@@ -56,6 +56,7 @@ class UserSkillStatus(Base):
     status = Column(
         Enum(SkillStatus), default=SkillStatus.not_started, server_default=SkillStatus.not_started.value, nullable=False
     )
+    notes = Column(String(4000), nullable=True)
 
     user = relationship("User", back_populates="skill_statuses")
     skill = relationship("Skill")

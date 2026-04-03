@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional
 from models import SkatingTrack, SkillStatus, SkillCategory
 
@@ -25,7 +25,8 @@ class TokenData(BaseModel):
 
 
 class SkillUpdate(BaseModel):
-    status: SkillStatus
+    status: Optional[SkillStatus] = None
+    notes: Optional[str] = Field(default=None, max_length=4000)
 
 
 class SkillBase(BaseModel):
@@ -45,6 +46,7 @@ class UserSkillStatusResponse(BaseModel):
     level: int
     category: SkillCategory
     bonus: bool
+    notes: Optional[str] = None
 
     model_config = {"from_attributes": True}
 

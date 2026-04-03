@@ -39,6 +39,7 @@ export function SkillDetailModal({ skill }: { skill: UserSkill }) {
             <div className="grid w-full gap-1.5">
               <Label className="mb-2">Notes</Label>
               <Textarea
+                maxLength={4000}
                 className="h-32"
                 placeholder="Add your notes, cues, reminders..."
                 id="message"
@@ -47,14 +48,17 @@ export function SkillDetailModal({ skill }: { skill: UserSkill }) {
           </div>
         </div>
       </DialogDescription>
-      <DialogFooter className="px-6 pb-6 sm:justify-start">
+      <div className="px-6 pb-6 flex justify-between">
         <DialogClose asChild>
-          <Button variant="outline">
+          <Button className="w-24" variant="outline">
             <ChevronLeftIcon />
             Back
           </Button>
         </DialogClose>
-      </DialogFooter>
+        <Button className="w-24" variant="outline">
+          Save
+        </Button>
+      </div>
     </DialogContent>
   );
 }
