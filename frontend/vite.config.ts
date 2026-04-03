@@ -13,7 +13,28 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      'react-dom/client',
+      'react-router-dom',
+      'axios',
+      'lucide-react',
+      'clsx',
+      'tailwind-merge',
+      'class-variance-authority',
+      'radix-ui',
+      '@dnd-kit/react',
+      '@dnd-kit/state',
+      '@dnd-kit/abstract',
+      '@dnd-kit/geometry',
+      '@dnd-kit/utilities',
+      '@dnd-kit/dom',
+    ],
+  },
   server: {
+    host: '127.0.0.1',
     proxy: {
       '/auth': 'http://127.0.0.1:8000',
       '/users': 'http://127.0.0.1:8000',
