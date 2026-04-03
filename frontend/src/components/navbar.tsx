@@ -29,7 +29,7 @@ export function Navbar() {
             <TabsTrigger
               key={value}
               value={value}
-              className="rounded-full px-3 py-1 text-[12px] text-muted-foreground hover:bg-muted data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-none"
+              className="rounded-full px-3 py-1 text-sm text-muted-foreground hover:bg-muted data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-none"
             >
               <Icon />
               {name}
