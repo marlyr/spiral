@@ -1,5 +1,5 @@
 import type { SkillCategory } from "@/types";
-import { Badge } from "./badge";
+import { Badge } from "@/components/badge";
 
 const categoryStyles: Record<string, { bg: string; color: string }> = {
   jump: { bg: "#f6ede6", color: "#b8784e" },

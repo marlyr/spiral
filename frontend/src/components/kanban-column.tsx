@@ -1,13 +1,8 @@
 import type { UserSkill, SkillStatus } from "@/types";
 import { SkillCard } from "@/components/skill-card";
+import { statusStyles as statusConfig } from "@/lib/status-styles";
 
 import { useDroppable } from "@dnd-kit/react";
-
-const statusConfig: Record<SkillStatus, { label: string; dotColor: string }> = {
-  not_started: { label: "Not Started", dotColor: "bg-[#e0dbd2]" },
-  working_on: { label: "Working On", dotColor: "bg-[#7c85c8]" },
-  completed: { label: "Completed", dotColor: "bg-[#6b8f74]" },
-};
 
 export function KanbanColumn({
   skills,
