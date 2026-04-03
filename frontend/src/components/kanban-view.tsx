@@ -64,10 +64,10 @@ export function KanbanView() {
   return (
     <>
       {fetchError && <h2>Something went wrong</h2>}
-      <div>
+      <div className="max-w-5xl mx-auto px-6">
         <button
           onClick={toggleAll}
-          className="mb-4 px-4 py-1.5 rounded-full border border-border text-[12px] text-muted-foreground bg-transparent hover:bg-muted transition-all"
+          className="block ml-auto mb-4 px-4 py-1.5 rounded-full border border-border text-[12px] text-muted-foreground bg-transparent hover:bg-muted transition-all"
         >
           {openLevels.size === 0 ? "Expand All" : "Collapse All"}
         </button>
