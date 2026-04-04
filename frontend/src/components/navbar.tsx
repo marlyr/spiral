@@ -1,6 +1,7 @@
-import { House, BookText, User } from "lucide-react";
+import { House, BookText } from "lucide-react";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AvatarDropdown } from "@/components/avatar-dropdown";
 
 const tabs = [
   {
@@ -13,16 +14,11 @@ const tabs = [
     value: "diary",
     icon: BookText,
   },
-  {
-    name: "Profile",
-    value: "profile",
-    icon: User,
-  },
 ];
 
 export function Navbar() {
   return (
-    <div className="flex items-center justify-center w-full max-w-md">
+    <div className="flex items-center gap-3">
       <Tabs defaultValue="explore" className="gap-4">
         <TabsList className="bg-transparent border border-border rounded-full p-1">
           {tabs.map(({ icon: Icon, name, value }) => (
@@ -37,6 +33,7 @@ export function Navbar() {
           ))}
         </TabsList>
       </Tabs>
+      <AvatarDropdown />
     </div>
   );
 }
