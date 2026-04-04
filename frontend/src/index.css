@@ -47,6 +47,8 @@
 
 :root {
   --radius: 0.5rem;
+  --page-bg-color: #f7f5f1;
+  --page-bg-dot: rgba(107, 98, 88, 0.12);
 
   --background: #f7f5f1;
   --foreground: #1a1714;
@@ -94,6 +96,8 @@
 }
 
 .dark {
+  --page-bg-color: #1a1714;
+  --page-bg-dot: rgba(255, 255, 255, 0.07);
   --background: #1a1714;
   --foreground: #f0ece6;
   --card: #24201c;
@@ -143,7 +147,15 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
-    font-family: 'Outfit', sans-serif;
+    background-color: var(--page-bg-color);
+    background-image: radial-gradient(
+      circle,
+      var(--page-bg-dot) 1px,
+      transparent 1px
+    );
+    background-size: 22px 22px;
+    @apply text-foreground;
+    font-family: "Outfit", sans-serif;
+    min-height: 100vh;
   }
 }

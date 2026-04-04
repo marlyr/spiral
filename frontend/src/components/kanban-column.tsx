@@ -18,6 +18,7 @@ export function KanbanColumn({
     <div
       ref={ref}
       className="bg-card border border-border rounded-xl p-4 flex flex-col gap-3"
+      style={{ borderTopWidth: '2px', borderTopColor: statusConfig[status].color }}
     >
       <div className="flex items-center justify-between pb-3 border-b border-border">
         <div className="flex items-center gap-2">
