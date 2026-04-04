@@ -67,18 +67,18 @@ export function KanbanView() {
       <div className="max-w-5xl mx-auto px-6">
         <button
           onClick={toggleAll}
-          className="block ml-auto mb-4 px-4 py-1.5 rounded-full border border-border text-[12px] text-muted-foreground bg-transparent hover:bg-muted transition-all"
+          className="block ml-auto mb-4 px-4 py-1.5 rounded-full border border-border text-[12px] text-muted-foreground bg-card hover:bg-muted transition-all"
         >
           {openLevels.size === 0 ? "Expand All" : "Collapse All"}
         </button>
         {levels.map((level) => (
           <Collapsible
             key={level}
-            className="rounded-xl border border-border mb-3 overflow-hidden"
+            className="rounded-xl border border-border mb-3 overflow-hidden shadow-md bg-card"
             open={openLevels.has(level)}
             onOpenChange={(isOpen) => toggleLevel(isOpen, level)}
           >
-            <CollapsibleTrigger className="w-full flex items-center justify-between px-4 py-3 hover:bg-muted/50 transition-colors">
+            <CollapsibleTrigger className="w-full flex items-center justify-between px-4 py-3 bg-background hover:bg-muted/50 transition-colors">
               <div className="flex items-center gap-2">
                 <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[var(--text2)]">
                   Level {level}
@@ -92,7 +92,7 @@ export function KanbanView() {
               />
             </CollapsibleTrigger>
             <CollapsibleContent>
-              <div className="p-3 bg-background">
+              <div className="p-3 bg-card">
                 <KanbanBoard
                   key={level}
                   skills={skills.filter((s) => s.level === level)}

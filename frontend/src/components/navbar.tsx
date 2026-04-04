@@ -20,7 +20,7 @@ export function Navbar() {
   return (
     <div className="flex items-center gap-3">
       <Tabs defaultValue="explore" className="gap-4">
-        <TabsList className="bg-transparent border border-border rounded-full p-1">
+        <TabsList className="bg-card border border-border rounded-full p-1">
           {tabs.map(({ icon: Icon, name, value }) => (
             <TabsTrigger
               key={value}
