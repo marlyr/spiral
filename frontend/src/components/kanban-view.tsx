@@ -78,7 +78,7 @@ export function KanbanView() {
             open={openLevels.has(level)}
             onOpenChange={(isOpen) => toggleLevel(isOpen, level)}
           >
-            <CollapsibleTrigger className="w-full flex items-center justify-between px-4 py-3 bg-background hover:bg-muted/50 transition-colors">
+            <CollapsibleTrigger className="w-full flex items-center justify-between px-4 py-3 bg-card border-b border-border hover:bg-muted/30 transition-colors">
               <div className="flex items-center gap-2">
                 <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[var(--text2)]">
                   Level {level}
