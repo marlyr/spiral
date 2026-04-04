@@ -7,6 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { LogOutIcon, SlidersHorizontal } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 // TODO: replace with real auth data
 const name = "Me";
@@ -23,6 +24,7 @@ function Avatar() {
 }
 
 export function AvatarDropdown() {
+  const navigate = useNavigate();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -51,7 +53,10 @@ export function AvatarDropdown() {
 
         <DropdownMenuSeparator className="mx-1" />
 
-        <DropdownMenuItem className="rounded-lg gap-2.5 px-3 py-2 text-sm text-foreground cursor-pointer">
+        <DropdownMenuItem
+          className="rounded-lg gap-2.5 px-3 py-2 text-sm text-foreground cursor-pointer"
+          onClick={() => navigate("/track-selection")}
+        >
           <SlidersHorizontal className="w-4 h-4 text-muted-foreground" />
           Change track
         </DropdownMenuItem>
@@ -61,6 +66,8 @@ export function AvatarDropdown() {
         <DropdownMenuItem
           variant="destructive"
           className="rounded-lg gap-2.5 px-3 py-2 text-sm cursor-pointer"
+          // TODO: Use supabase to sign out when I set it up
+          onClick={() => navigate("/login")}
         >
           <LogOutIcon className="w-4 h-4" />
           Log out
