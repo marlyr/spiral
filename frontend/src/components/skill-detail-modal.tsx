@@ -1,4 +1,5 @@
-import { ChevronLeftIcon } from "lucide-react";
+import api from "@/lib/api";
+
 import { Textarea } from "@/components/ui/textarea";
 import { CategoryBadge } from "./category-badge";
 import { Button } from "@/components/ui/button";
@@ -11,8 +12,31 @@ import {
 } from "@/components/ui/dialog";
 import type { UserSkill } from "@/types";
 import { StatusBadge } from "@/components/status-badge";
+import { useState, useEffect } from "react";
 
 export function SkillDetailModal({ skill }: { skill: UserSkill }) {
+  const [notes, setNotes] = useState(skill.notes ?? "");
+  const [saved, setSaved] = useState(false);
+
+  const handleSave = async (skill: UserSkill, newNotes: string) => {
+    try {
+      await api.patch(`/skills/${skill.id}`, { notes: newNotes });
+      setSaved(true);
+    } catch (error) {
+      console.error("Failed to update skill notes: ", error);
+      return;
+    }
+  };
+
+  // TODO: save on close?
+
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      handleSave(skill, notes);
+    }, 1000); // autosave
+    return () => clearTimeout(timerId);
+  }, [notes]);
+
   return (
     <DialogContent className="flex max-h-[min(640px,85vh)] flex-col gap-0 p-0 sm:max-w-md overflow-hidden">
       <DialogTitle asChild>
@@ -79,7 +103,14 @@ export function SkillDetailModal({ skill }: { skill: UserSkill }) {
               gap: "14px",
             }}
           >
-            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "6px",
+                position: "relative",
+              }}
+            >
               <div
                 style={{
                   fontSize: "10px",
@@ -92,6 +123,12 @@ export function SkillDetailModal({ skill }: { skill: UserSkill }) {
                 My Notes
               </div>
               <Textarea
+                value={notes}
+                onChange={(e) => {
+                  setNotes(e.target.value);
+                  setSaved(false);
+                }}
+                onBlur={() => handleSave(skill, notes)}
                 maxLength={4000}
                 autoComplete="off"
                 data-lpignore="true"
@@ -114,6 +151,20 @@ export function SkillDetailModal({ skill }: { skill: UserSkill }) {
                 placeholder="Add your own notes, cues, reminders…"
                 id="notes"
               />
+              <p
+                style={{
+                  textAlign: "right",
+                  fontSize: "10px",
+                  color: "var(--text3)",
+                  position: "absolute",
+                  bottom: "-16px",
+                  right: "0",
+                  margin: 0,
+                  visibility: saved ? "visible" : "hidden",
+                }}
+              >
+                Saved
+              </p>
             </div>
           </div>
         </div>
@@ -125,23 +176,14 @@ export function SkillDetailModal({ skill }: { skill: UserSkill }) {
           padding: "12px 22px 18px",
           borderTop: "1px solid var(--border)",
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: "center",
         }}
       >
         <DialogClose asChild>
-          <Button
-            variant="outline"
-            className="w-22 text-[13px] border-border bg-secondary text-[var(--text2)] hover:bg-[var(--border)] hover:text-foreground transition-colors"
-          >
-            <ChevronLeftIcon />
-            Back
+          <Button className="w-22 text-[13px] bg-primary text-white border-none hover:bg-[#6670b8] transition-colors">
+            Close
           </Button>
         </DialogClose>
-        <Button
-          className="w-22 text-[13px] bg-primary text-white border-none hover:bg-[#6670b8] transition-colors"
-        >
-          Save
-        </Button>
       </div>
     </DialogContent>
   );
