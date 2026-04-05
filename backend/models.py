@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Enum, Boolean
+from sqlalchemy import Column, Integer, String, ForeignKey, Enum, Boolean, text
+from sqlalchemy.dialects.postgresql import UUID                                                                                              
 from sqlalchemy.orm import relationship
 from database import Base
 from enum import StrEnum
@@ -28,9 +29,8 @@ class SkillCategory(StrEnum):
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()"))
     email = Column(String, unique=True, index=True, nullable=False)
-    hashed_password = Column(String)
     active_track = Column(Enum(SkatingTrack), nullable=True)
 
     skill_statuses = relationship("UserSkillStatus", back_populates="user")
@@ -51,7 +51,7 @@ class UserSkillStatus(Base):
     __tablename__ = "user_skill_statuses"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     skill_id = Column(Integer, ForeignKey("skills.id"), nullable=False)
     status = Column(
         Enum(SkillStatus), default=SkillStatus.not_started, server_default=SkillStatus.not_started.value, nullable=False
