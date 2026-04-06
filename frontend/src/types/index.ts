@@ -10,7 +10,7 @@ export type SkillCategory =
   | "jump";
 
 export interface User {
-  id: number;
+  id: string;
   email: string;
   active_track: string | null;
 }
