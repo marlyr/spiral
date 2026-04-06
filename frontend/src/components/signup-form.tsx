@@ -45,8 +45,13 @@ export function SignupForm({
       return;
     }
 
-    const { error } = await supabase.auth.signUp({ email, password });
-
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/dashboard`,
+      },
+    });
     if (error) {
       setGeneralError(error.message);
     } else {
@@ -116,7 +121,7 @@ export function SignupForm({
                 <Button type="submit">Create Account</Button>
                 <FieldDescription className="text-center">
                   Already have an account?{" "}
-                  <a href="#" className="text-primary hover:underline">
+                  <a href="/login" className="text-primary hover:underline">
                     Sign in
                   </a>
                 </FieldDescription>
