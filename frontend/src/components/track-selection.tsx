@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import placeholder from "@/assets/placeholder.png";
 import type { SkatingTrack } from "@/types";
-import axios from "axios";
+import api from "@/lib/api";
 import { TrackCard } from "@/components/track-card";
 
 const tracks = [
@@ -20,14 +20,7 @@ export function TrackSelection() {
     setGeneralError(false);
     console.log(track);
     try {
-      const token = localStorage.getItem("jwtToken");
-      await axios.patch(
-        "/users/track",
-        { active_track: track },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
+      await api.patch("/users/track", { active_track: track });
       navigate("/dashboard");
     } catch (error: any) {
       setGeneralError(true);
@@ -36,7 +29,9 @@ export function TrackSelection() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen gap-8">
-      <h1 className="text-4xl font-semibold tracking-tight">Choose your track</h1>
+      <h1 className="text-4xl font-semibold tracking-tight">
+        Choose your track
+      </h1>
       <div className="flex flex-row gap-8">
         {tracks.map((track) => (
           <TrackCard
