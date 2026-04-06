@@ -8,13 +8,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { LogOutIcon, SlidersHorizontal } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/auth-context";
 
-// TODO: replace with real auth data
-const name = "Me";
-const email = "me@example.com";
-
-function Avatar() {
-  const initial = name.charAt(0).toUpperCase();
+function Avatar({ email }: { email: string }) {
+  const initial = email.charAt(0).toUpperCase();
 
   return (
     <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold text-white bg-primary">
@@ -25,6 +22,14 @@ function Avatar() {
 
 export function AvatarDropdown() {
   const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+  const email = user?.email ?? "";
+
+  async function handleSignOut() {
+    await signOut();
+    navigate("/login");
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -33,7 +38,7 @@ export function AvatarDropdown() {
           size="icon"
           className="rounded-full p-0 hover:bg-transparent focus-visible:ring-0"
         >
-          <Avatar />
+          <Avatar email={email} />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
@@ -42,7 +47,6 @@ export function AvatarDropdown() {
       >
         {/* User info header */}
         <div className="px-3 py-2.5">
-          <p className="text-sm font-medium text-foreground">{name}</p>
           <p
             className="text-xs text-muted-foreground truncate mt-0.5"
             title={email}
@@ -66,8 +70,7 @@ export function AvatarDropdown() {
         <DropdownMenuItem
           variant="destructive"
           className="rounded-lg gap-2.5 px-3 py-2 text-sm cursor-pointer"
-          // TODO: Use supabase to sign out when I set it up
-          onClick={() => navigate("/login")}
+          onClick={handleSignOut}
         >
           <LogOutIcon className="w-4 h-4" />
           Log out
