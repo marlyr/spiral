@@ -17,7 +17,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import axios from "axios";
+import { supabase } from "@/lib/supabase";
 
 export function LoginForm({
   className,
@@ -31,17 +31,14 @@ export function LoginForm({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setGeneralError(false);
-    const data = new URLSearchParams({
-      username: email,
-      password: password,
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
     });
-    try {
-      const response = await axios.post("/auth/login", data);
-      const { access_token } = response.data;
-      localStorage.setItem("jwtToken", access_token);
-      navigate("/dashboard");
-    } catch (error: any) {
+    if (error) {
       setGeneralError(true);
+    } else {
+      navigate("/dashboard");
     }
   }
 
@@ -72,12 +69,12 @@ export function LoginForm({
               <Field>
                 <div className="flex items-center">
                   <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <a
-                    href="#"
+                  <Link
+                    to="/forgot-password"
                     className="ml-auto text-sm text-primary underline-offset-4 hover:underline"
                   >
                     Forgot your password?
-                  </a>
+                  </Link>
                 </div>
                 <Input
                   id="password"
@@ -98,7 +95,9 @@ export function LoginForm({
                 </Button>
                 <FieldDescription className="text-center">
                   Don&apos;t have an account?{" "}
-                  <Link to="/register" className="text-primary hover:underline">Sign up</Link>
+                  <Link to="/register" className="text-primary hover:underline">
+                    Sign up
+                  </Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>
