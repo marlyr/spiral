@@ -1,20 +1,21 @@
 import axios from "axios";
+import { supabase } from "./supabase";
 
 const api = axios.create();
 
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("jwtToken");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+api.interceptors.request.use(async (config) => {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session?.access_token) {
+    config.headers.Authorization = `Bearer ${session.access_token}`;
   }
   return config;
 });
 
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem("jwtToken");
+      await supabase.auth.signOut();
       window.location.href = "/login";
     }
     return Promise.reject(error);
