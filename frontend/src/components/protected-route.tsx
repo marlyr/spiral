@@ -1,10 +1,11 @@
 import { Navigate } from "react-router-dom";
+import { useAuth } from "@/context/auth-context";
 
-// TODO: handle invalid/expired tokens
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const token = localStorage.getItem("jwtToken");
-  if (!token) {
-    return <Navigate to="/login" replace />;
-  }
+  const { session, loading } = useAuth();
+
+  if (loading) return null;
+  if (!session) return <Navigate to="/login" replace />;
+
   return <>{children}</>;
 }
