@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +17,6 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import axios from "axios";
 
 export function SignupForm({
   className,
@@ -27,16 +27,15 @@ export function SignupForm({
   const [confirmedPassword, setConfirmedPassword] = useState("");
 
   const [passwordError, setPasswordError] = useState("");
-  const [emailError, setEmailError] = useState(false);
-  const [generalError, setGeneralError] = useState(false);
+  const [generalError, setGeneralError] = useState("");
 
   const navigate = useNavigate();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setGeneralError(false);
-    setEmailError(false);
+    setGeneralError("");
     setPasswordError("");
+
     if (password.length < 8) {
       setPasswordError("Password must be at least 8 characters");
       return;
@@ -46,21 +45,12 @@ export function SignupForm({
       return;
     }
 
-    const data = {
-      email: email,
-      password: password,
-    };
-    try {
-      const response = await axios.post("/auth/register", data);
-      const { access_token } = response.data;
-      localStorage.setItem("jwtToken", access_token);
+    const { error } = await supabase.auth.signUp({ email, password });
+
+    if (error) {
+      setGeneralError(error.message);
+    } else {
       navigate("/track-selection");
-    } catch (error: any) {
-      if (error.response && error.response.status === 400) {
-        setEmailError(true);
-      } else {
-        setGeneralError(true);
-      }
     }
   }
 
@@ -83,16 +73,10 @@ export function SignupForm({
                   type="email"
                   placeholder="m@example.com"
                   value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                    setEmailError(false);
-                  }}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </Field>
-              {emailError && (
-                <p className="text-red-500 text-sm">Email already registered</p>
-              )}
               <Field>
                 <Field className="grid grid-cols-2 gap-4">
                   <Field>
@@ -126,14 +110,15 @@ export function SignupForm({
                     <p className="text-red-500 text-sm">{passwordError}</p>
                   )}
                   {generalError && (
-                    <p className="text-red-500 text-sm">
-                      An error occured. Please try again
-                    </p>
+                    <p className="text-red-500 text-sm">{generalError}</p>
                   )}
                 </Field>
                 <Button type="submit">Create Account</Button>
                 <FieldDescription className="text-center">
-                  Already have an account? <a href="#" className="text-primary hover:underline">Sign in</a>
+                  Already have an account?{" "}
+                  <a href="#" className="text-primary hover:underline">
+                    Sign in
+                  </a>
                 </FieldDescription>
               </Field>
             </FieldGroup>
@@ -141,8 +126,15 @@ export function SignupForm({
         </CardContent>
       </Card>
       <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our <a href="#" className="text-primary hover:underline">Terms of Service</a>{" "}
-        and <a href="#" className="text-primary hover:underline">Privacy Policy</a>.
+        By clicking continue, you agree to our{" "}
+        <a href="#" className="text-primary hover:underline">
+          Terms of Service
+        </a>{" "}
+        and{" "}
+        <a href="#" className="text-primary hover:underline">
+          Privacy Policy
+        </a>
+        .
       </FieldDescription>
     </div>
   );
