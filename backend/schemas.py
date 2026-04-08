@@ -1,10 +1,11 @@
 from pydantic import BaseModel, Field
 from typing import Optional
+from uuid import UUID
 from models import SkatingTrack, SkillStatus, SkillCategory
 
 
 class UserResponse(BaseModel):
-    id: str
+    id: UUID
     email: str
     active_track: Optional[SkatingTrack] = None
     
