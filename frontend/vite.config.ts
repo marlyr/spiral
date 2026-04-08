@@ -1,13 +1,10 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
-import path from 'path'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import path from "path";
 
 export default defineConfig({
-  plugins: [
-    react(),
-    tailwindcss(),
-  ],
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -15,30 +12,29 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: [
-      'react',
-      'react-dom',
-      'react-dom/client',
-      'react-router-dom',
-      'axios',
-      'lucide-react',
-      'clsx',
-      'tailwind-merge',
-      'class-variance-authority',
-      'radix-ui',
-      '@dnd-kit/react',
-      '@dnd-kit/state',
-      '@dnd-kit/abstract',
-      '@dnd-kit/geometry',
-      '@dnd-kit/utilities',
-      '@dnd-kit/dom',
+      "react",
+      "react-dom",
+      "react-dom/client",
+      "react-router-dom",
+      "axios",
+      "lucide-react",
+      "clsx",
+      "tailwind-merge",
+      "class-variance-authority",
+      "radix-ui",
+      "@dnd-kit/react",
+      "@dnd-kit/state",
+      "@dnd-kit/abstract",
+      "@dnd-kit/geometry",
+      "@dnd-kit/utilities",
+      "@dnd-kit/dom",
     ],
   },
   server: {
-    host: '127.0.0.1',
+    host: "127.0.0.1",
     proxy: {
-      '/auth': 'http://127.0.0.1:8000',
-      '/users': 'http://127.0.0.1:8000',
-      '/skills': 'http://127.0.0.1:8000'
-    }
-  }
-})
+      "/users": "http://127.0.0.1:8000",
+      "/skills": "http://127.0.0.1:8000",
+    },
+  },
+});
