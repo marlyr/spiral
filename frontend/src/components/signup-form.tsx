@@ -49,13 +49,13 @@ export function SignupForm({
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/dashboard`,
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
       },
     });
     if (error) {
       setGeneralError(error.message);
     } else {
-      navigate("/track-selection");
+      navigate("/check-email");
     }
   }
 
