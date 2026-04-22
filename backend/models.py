@@ -1,8 +1,9 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Enum, Boolean, text
-from sqlalchemy.dialects.postgresql import UUID                                                                                              
-from sqlalchemy.orm import relationship
-from database import Base
 from enum import StrEnum
+
+from database import Base
+from sqlalchemy import Boolean, Column, Enum, ForeignKey, Integer, String, text
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 
 
 class SkillStatus(StrEnum):
@@ -16,7 +17,7 @@ class SkatingTrack(StrEnum):
     adult = "adult"
     pre_freeskate = "pre_freeskate"
     freeskate = "freeskate"
-    
+
 
 class SkillCategory(StrEnum):
     foundation = "foundation"
@@ -54,7 +55,10 @@ class UserSkillStatus(Base):
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     skill_id = Column(Integer, ForeignKey("skills.id"), nullable=False)
     status = Column(
-        Enum(SkillStatus), default=SkillStatus.not_started, server_default=SkillStatus.not_started.value, nullable=False
+        Enum(SkillStatus),
+        default=SkillStatus.not_started,
+        server_default=SkillStatus.not_started.value,
+        nullable=False,
     )
     notes = Column(String(4000), nullable=True)
 

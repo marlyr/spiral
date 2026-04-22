@@ -1,8 +1,8 @@
+import models
+from database import engine
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from database import engine
-import models
-from routers import auth, skills, users
+from routers import skills, users
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -17,6 +17,7 @@ app.add_middleware(
 )
 app.include_router(users.router)
 app.include_router(skills.router)
+
 
 @app.get("/")
 def read_root():

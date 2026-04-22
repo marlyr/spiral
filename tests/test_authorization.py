@@ -1,8 +1,7 @@
 import uuid
 
 import pytest
-
-from models import Skill, SkillCategory, SkillStatus, SkatingTrack, User, UserSkillStatus
+from models import SkatingTrack, Skill, SkillCategory, SkillStatus, User, UserSkillStatus
 from routers import skills, users
 from schemas import SkillUpdate, TrackUpdate
 

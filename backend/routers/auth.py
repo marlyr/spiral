@@ -1,12 +1,13 @@
-from fastapi import Depends, HTTPException
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from sqlalchemy.orm import Session
-from database import get_db
-from models import User
-from dotenv import load_dotenv
-import jwt
 import os
 import uuid
+
+import jwt
+from database import get_db
+from dotenv import load_dotenv
+from fastapi import Depends, HTTPException
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from models import User
+from sqlalchemy.orm import Session
 
 load_dotenv()
 
@@ -24,8 +25,7 @@ jwks_client = jwt.PyJWKClient(SUPABASE_JWKS_URL)
 
 
 def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
-    db: Session = Depends(get_db)
+    credentials: HTTPAuthorizationCredentials = Depends(security), db: Session = Depends(get_db)
 ):
     token = credentials.credentials
 

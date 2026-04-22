@@ -1,14 +1,15 @@
-from pydantic import BaseModel, Field
 from typing import Optional
 from uuid import UUID
-from models import SkatingTrack, SkillStatus, SkillCategory
+
+from models import SkatingTrack, SkillCategory, SkillStatus
+from pydantic import BaseModel, Field
 
 
 class UserResponse(BaseModel):
     id: UUID
     email: str
     active_track: Optional[SkatingTrack] = None
-    
+
     model_config = {"from_attributes": True}
 
 
@@ -37,6 +38,7 @@ class UserSkillStatusResponse(BaseModel):
     notes: Optional[str] = None
 
     model_config = {"from_attributes": True}
+
 
 class TrackUpdate(BaseModel):
     active_track: SkatingTrack
