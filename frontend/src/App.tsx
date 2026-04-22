@@ -7,7 +7,8 @@ import { ProtectedRoute } from "@/components/protected-route";
 import { TrackSelection } from "@/components/track-selection";
 import { Dashboard } from "./components/dashboard";
 import { AuthProvider } from "@/context/auth-context";
-import { ResetPassword } from "./components/reset-password";
+import ForgotPassword from "@/pages/ForgotPassword";
+import ResetPassword from "@/pages/ResetPassword";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/check-email" element={<CheckEmail />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route
             path="/track-selection"
