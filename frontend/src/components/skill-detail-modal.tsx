@@ -35,7 +35,7 @@ export function SkillDetailModal({ skill }: { skill: UserSkill }) {
       handleSave(skill, notes);
     }, 1000); // autosave
     return () => clearTimeout(timerId);
-  }, [notes]);
+  }, [notes, skill]);
 
   return (
     <DialogContent className="flex max-h-[min(640px,85vh)] flex-col gap-0 p-0 sm:max-w-md overflow-hidden">
