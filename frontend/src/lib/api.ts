@@ -14,7 +14,12 @@ api.interceptors.request.use(async (config) => {
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error.response?.status === 401) {
+    const status = error.response?.status;
+    const isAuthRoute = ["/login", "/register", "/forgot-password", "/reset-password"].includes(
+      window.location.pathname,
+    );
+
+    if ((status === 401 || status === 403) && !isAuthRoute) {
       await supabase.auth.signOut();
       window.location.href = "/login";
     }
