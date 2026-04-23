@@ -5,10 +5,10 @@ import CheckEmail from "@/pages/CheckEmail";
 import AuthCallback from "@/pages/AuthCallback";
 import { ProtectedRoute } from "@/components/protected-route";
 import { TrackSelection } from "@/components/track-selection";
-import { Dashboard } from "./components/dashboard";
 import { AuthProvider } from "@/context/auth-context";
 import ForgotPassword from "@/pages/ForgotPassword";
 import ResetPassword from "@/pages/ResetPassword";
+import DashboardPage from "@/pages/Dashboard";
 
 function App() {
   return (
@@ -34,7 +34,7 @@ function App() {
             path="/dashboard"
             element={
               <ProtectedRoute>
-                <Dashboard />
+                <DashboardPage />
               </ProtectedRoute>
             }
           />

@@ -1,4 +1,4 @@
-import ChevronRight from "lucide-react/dist/esm/icons/chevron-right";
+import { ChevronRight } from "lucide-react";
 import type { UserSkill, SkillStatus } from "@/types";
 import { KanbanBoard } from "@/components/kanban-board";
 import { useState, useEffect } from "react";

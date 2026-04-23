@@ -6,8 +6,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import LogOutIcon from "lucide-react/dist/esm/icons/log-out";
-import SlidersHorizontal from "lucide-react/dist/esm/icons/sliders-horizontal";
+import { LogOutIcon, SlidersHorizontal } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/auth-context";
 

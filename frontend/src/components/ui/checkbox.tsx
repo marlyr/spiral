@@ -1,6 +1,6 @@
 import * as React from "react";
-import CheckIcon from "lucide-react/dist/esm/icons/check";
-import { Checkbox as CheckboxPrimitive } from "radix-ui";
+import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
+import { CheckIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
