@@ -3,6 +3,12 @@ import { supabase } from "./supabase";
 
 const api = axios.create();
 
+export const apiNavigation = {
+  redirectToLogin() {
+    window.location.assign("/login");
+  },
+};
+
 api.interceptors.request.use(async (config) => {
   const {
     data: { session },
@@ -26,7 +32,7 @@ api.interceptors.response.use(
 
     if ((status === 401 || status === 403) && !isAuthRoute) {
       await supabase.auth.signOut();
-      window.location.href = "/login";
+      apiNavigation.redirectToLogin();
     }
     return Promise.reject(error);
   },
