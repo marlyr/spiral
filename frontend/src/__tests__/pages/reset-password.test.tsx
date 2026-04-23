@@ -55,7 +55,9 @@ describe("ResetPassword", () => {
     await user.type(screen.getByLabelText("Confirm Password"), "different123");
     await user.click(screen.getByRole("button", { name: "Confirm" }));
 
-    expect(await screen.findByText("Passwords do not match")).toBeInTheDocument();
+    expect(
+      await screen.findByText("Passwords do not match"),
+    ).toBeInTheDocument();
   });
 
   it("surfaces a generic error when updateUser fails", async () => {

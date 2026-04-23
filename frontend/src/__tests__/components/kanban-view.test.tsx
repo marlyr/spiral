@@ -57,7 +57,9 @@ describe("KanbanView", () => {
 
     await user.click(screen.getByRole("button", { name: "Collapse All" }));
 
-    expect(screen.getByRole("button", { name: "Expand All" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Expand All" }),
+    ).toBeInTheDocument();
     expect(screen.queryByText("Forward swizzles")).not.toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "Expand All" }));

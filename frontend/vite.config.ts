@@ -51,10 +51,7 @@ export default defineConfig({
         "src/pages/ForgotPassword.tsx",
         "src/pages/ResetPassword.tsx",
       ],
-      exclude: [
-        "src/__tests__/**",
-        "src/test-utils/**",
-      ],
+      exclude: ["src/__tests__/**", "src/test-utils/**"],
       thresholds: {
         lines: 80,
         statements: 80,

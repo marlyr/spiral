@@ -48,8 +48,14 @@ describe("KanbanBoard", () => {
       />,
     );
 
-    expect(within(getColumn("Not Started")).getByText("Forward swizzles")).toBeInTheDocument();
-    expect(within(getColumn("Working On")).getByText("Forward stroking")).toBeInTheDocument();
-    expect(within(getColumn("Completed")).getByText("Two-foot spin")).toBeInTheDocument();
+    expect(
+      within(getColumn("Not Started")).getByText("Forward swizzles"),
+    ).toBeInTheDocument();
+    expect(
+      within(getColumn("Working On")).getByText("Forward stroking"),
+    ).toBeInTheDocument();
+    expect(
+      within(getColumn("Completed")).getByText("Two-foot spin"),
+    ).toBeInTheDocument();
   });
 });

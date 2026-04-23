@@ -26,8 +26,14 @@ function renderAuthCallback(
       <Routes>
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/dashboard" element={<div>Dashboard Page</div>} />
-        <Route path="/track-selection" element={<div>Track Selection Page</div>} />
-        <Route path="/reset-password" element={<div>Reset Password Page</div>} />
+        <Route
+          path="/track-selection"
+          element={<div>Track Selection Page</div>}
+        />
+        <Route
+          path="/reset-password"
+          element={<div>Reset Password Page</div>}
+        />
       </Routes>
     </MemoryRouter>,
   );

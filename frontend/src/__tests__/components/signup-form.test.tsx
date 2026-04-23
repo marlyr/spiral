@@ -57,7 +57,9 @@ describe("SignupForm", () => {
     await user.type(screen.getByLabelText("Confirm Password"), "different123");
     await user.click(screen.getByRole("button", { name: "Create Account" }));
 
-    expect(await screen.findByText("Passwords do not match")).toBeInTheDocument();
+    expect(
+      await screen.findByText("Passwords do not match"),
+    ).toBeInTheDocument();
   });
 
   it("calls signUp with the submitted credentials", async () => {

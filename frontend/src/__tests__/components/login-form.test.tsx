@@ -13,7 +13,9 @@ async function loadLoginForm() {
   return { LoginForm, mockSupabase };
 }
 
-function renderLoginForm(LoginForm: typeof import("@/components/login-form").LoginForm) {
+function renderLoginForm(
+  LoginForm: typeof import("@/components/login-form").LoginForm,
+) {
   render(
     <MemoryRouter initialEntries={["/login"]}>
       <Routes>

@@ -52,12 +52,15 @@ export const handlers = [
   http.get("http://localhost:3000/skills/", () =>
     HttpResponse.json(defaultSkills),
   ),
-  http.patch("http://localhost:3000/skills/:id", async ({ params, request }) => {
-    const body = (await request.json()) as Record<string, unknown>;
+  http.patch(
+    "http://localhost:3000/skills/:id",
+    async ({ params, request }) => {
+      const body = (await request.json()) as Record<string, unknown>;
 
-    return HttpResponse.json({
-      id: Number(params.id),
-      ...body,
-    });
-  }),
+      return HttpResponse.json({
+        id: Number(params.id),
+        ...body,
+      });
+    },
+  ),
 ];

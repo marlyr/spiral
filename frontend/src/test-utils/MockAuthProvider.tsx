@@ -1,8 +1,5 @@
 import type { Session, User } from "@supabase/supabase-js";
-import {
-  AuthContext,
-  type AuthContextType,
-} from "@/context/auth-context";
+import { AuthContext, type AuthContextType } from "@/context/auth-context";
 
 type MockAuthValue = Partial<AuthContextType> & {
   session?: Session | null;
