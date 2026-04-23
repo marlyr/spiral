@@ -1,4 +1,5 @@
-import { House, BookText } from "lucide-react";
+import House from "lucide-react/dist/esm/icons/house";
+import BookText from "lucide-react/dist/esm/icons/book-text";
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AvatarDropdown } from "@/components/avatar-dropdown";

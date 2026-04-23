@@ -17,7 +17,6 @@ export default defineConfig({
       "react-dom/client",
       "react-router-dom",
       "axios",
-      "lucide-react",
       "clsx",
       "tailwind-merge",
       "class-variance-authority",
@@ -26,7 +25,6 @@ export default defineConfig({
       "@dnd-kit/state",
       "@dnd-kit/abstract",
       "@dnd-kit/geometry",
-      "@dnd-kit/utilities",
       "@dnd-kit/dom",
     ],
   },
@@ -35,6 +33,9 @@ export default defineConfig({
     proxy: {
       "/users": "http://127.0.0.1:8000",
       "/skills": "http://127.0.0.1:8000",
+    },
+    watch: {
+      ignored: ["**/tsconfig*.json", "**/.env*"],
     },
   },
 });
