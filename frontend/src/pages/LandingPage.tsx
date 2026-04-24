@@ -10,30 +10,13 @@ import {
   Users,
 } from "lucide-react";
 
+import { KanbanDemo } from "@/components/kanban-demo";
 import { curriculumTracks } from "@/lib/track-details";
 import { cn } from "@/lib/utils";
-
-type SkillTone = "foundation" | "edge" | "footwork" | "jump" | "spin";
 
 type SessionPill = {
   color: string;
   name: string;
-};
-
-const heroColumns = {
-  notStarted: [
-    { name: "Two-foot glide", badge: "Foundation" as const, tone: "foundation" as SkillTone },
-    { name: "Forward swizzles", badge: "Edge" as const, tone: "edge" as SkillTone },
-  ],
-  workingOn: [
-    { name: "Back crossovers", badge: "Footwork" as const, tone: "footwork" as SkillTone },
-  ],
-  completed: [{ name: "Waltz jump", badge: "Jump" as const, tone: "jump" as SkillTone }],
-  animatedCard: {
-    name: "Forward crossovers",
-    badge: "Footwork" as const,
-    tone: "footwork" as SkillTone,
-  },
 };
 
 const deckCards = [
@@ -45,7 +28,8 @@ const deckCards = [
     category: "Spin",
     categoryClassName: "bg-[#e2d8f0] text-[#6550a0] border-[#c4b2e0]",
     status: "Not Started",
-    statusClassName: "bg-[var(--secondary)] text-[var(--text2)] border-[#d8d2c8]",
+    statusClassName:
+      "bg-[var(--secondary)] text-[var(--text2)] border-[#d8d2c8]",
     note: "Add your own notes, cues, reminders...",
     muted: true,
   },
@@ -163,89 +147,12 @@ function buildCalendarDays() {
 
 const calendarDays = buildCalendarDays();
 
-function getBadgeClassName(tone: SkillTone) {
-  switch (tone) {
-    case "foundation":
-      return "bg-[var(--secondary)] text-[var(--text2)] border-[#d8d2c8]";
-    case "edge":
-      return "bg-[var(--accent)] text-[#5a63a8] border-[#c5c9e8]";
-    case "footwork":
-      return "bg-[var(--sage-bg)] text-[#4d7a57] border-[#b8d8be]";
-    case "jump":
-      return "bg-[var(--warm-bg)] text-[#a0612e] border-[#e8cbb5]";
-    case "spin":
-      return "bg-[#e2d8f0] text-[#6550a0] border-[#c4b2e0]";
-  }
-}
-
-function KanbanCard({
-  name,
-  badge,
-  tone,
-  highlighted = false,
-  entering = false,
-  exiting = false,
-}: {
-  name: string;
-  badge: string;
-  tone: SkillTone;
-  highlighted?: boolean;
-  entering?: boolean;
-  exiting?: boolean;
-}) {
-  return (
-    <div
-      className={cn(
-        "rounded-[9px] border border-[var(--border)] bg-[var(--background)] px-[11px] py-[10px] transition-[border-color,box-shadow,transform]",
-        highlighted &&
-          "border-[var(--primary)] shadow-[0_0_0_2px_var(--accent)]",
-        entering && "landing-kanban-card-entering",
-        exiting && "landing-kanban-card-exiting",
-      )}
-    >
-      <div className="text-[12.5px] leading-[1.3] font-medium text-[var(--foreground)]">
-        {name}
-      </div>
-      <span
-        className={cn(
-          "mt-1 inline-flex w-fit items-center rounded-full border px-[7px] py-[2px] text-[10px] font-medium",
-          getBadgeClassName(tone),
-        )}
-      >
-        {badge}
-      </span>
-    </div>
-  );
-}
-
 export default function LandingPage() {
   const pageRef = useRef<HTMLDivElement | null>(null);
   const trackGridRef = useRef<HTMLDivElement | null>(null);
   const deckRef = useRef<HTMLDivElement | null>(null);
-  const [heroState, setHeroState] = useState<
-    "idle" | "highlight" | "exiting" | "entering" | "completed"
-  >("idle");
   const [tracksVisible, setTracksVisible] = useState(false);
   const [deckVisible, setDeckVisible] = useState(false);
-
-  useEffect(() => {
-    const timers: number[] = [];
-
-    const runCycle = () => {
-      setHeroState("idle");
-      timers.push(window.setTimeout(() => setHeroState("highlight"), 1800));
-      timers.push(window.setTimeout(() => setHeroState("exiting"), 2700));
-      timers.push(window.setTimeout(() => setHeroState("entering"), 3000));
-      timers.push(window.setTimeout(() => setHeroState("completed"), 3400));
-      timers.push(window.setTimeout(runCycle, 5600));
-    };
-
-    runCycle();
-
-    return () => {
-      timers.forEach((timer) => window.clearTimeout(timer));
-    };
-  }, []);
 
   useEffect(() => {
     const root = pageRef.current;
@@ -314,9 +221,6 @@ export default function LandingPage() {
     };
   }, []);
 
-  const animatedCardInCompleted =
-    heroState === "entering" || heroState === "completed";
-
   return (
     <div ref={pageRef} className="min-h-screen text-[var(--foreground)]">
       <nav className="mx-auto flex w-full max-w-[1080px] items-center justify-between px-8 pt-6 max-sm:px-5">
@@ -370,65 +274,8 @@ export default function LandingPage() {
           </Link>
         </div>
 
-        <div className="landing-hero-demo grid grid-cols-3 gap-[10px] drop-shadow-[0_8px_32px_rgba(107,98,88,0.10)] max-sm:grid-cols-1">
-          <div className="flex flex-col gap-[10px] rounded-[14px] border border-[var(--border)] border-t-[2px] border-t-[#cdc7bc] bg-[var(--card)] p-[14px]">
-            <div className="flex items-center justify-between border-b border-[var(--border)] pb-[10px]">
-              <div className="flex items-center gap-[7px] text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--peri-dim)]">
-                <span className="size-1.5 rounded-full bg-[#cdc7bc]" />
-                Not Started
-              </div>
-              <span className="text-[11px] text-[var(--border-mid)]">2</span>
-            </div>
-            <div className="flex flex-col gap-[7px]">
-              {heroColumns.notStarted.map((card) => (
-                <KanbanCard key={card.name} {...card} />
-              ))}
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-[10px] rounded-[14px] border border-[var(--border)] border-t-[2px] border-t-[var(--primary)] bg-[var(--card)] p-[14px]">
-            <div className="flex items-center justify-between border-b border-[var(--border)] pb-[10px]">
-              <div className="flex items-center gap-[7px] text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--peri-dim)]">
-                <span className="size-1.5 rounded-full bg-[var(--primary)]" />
-                Working On
-              </div>
-              <span className="text-[11px] text-[var(--border-mid)]">
-                {animatedCardInCompleted ? 1 : 2}
-              </span>
-            </div>
-            <div className="flex flex-col gap-[7px]">
-              {heroColumns.workingOn.map((card) => (
-                <KanbanCard key={card.name} {...card} />
-              ))}
-              {!animatedCardInCompleted && (
-                <KanbanCard
-                  {...heroColumns.animatedCard}
-                  highlighted={heroState === "highlight"}
-                  exiting={heroState === "exiting"}
-                />
-              )}
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-[10px] rounded-[14px] border border-[var(--border)] border-t-[2px] border-t-[var(--sage)] bg-[var(--card)] p-[14px]">
-            <div className="flex items-center justify-between border-b border-[var(--border)] pb-[10px]">
-              <div className="flex items-center gap-[7px] text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--peri-dim)]">
-                <span className="size-1.5 rounded-full bg-[var(--sage)]" />
-                Completed
-              </div>
-              <span className="text-[11px] text-[var(--border-mid)]">
-                {animatedCardInCompleted ? 2 : 1}
-              </span>
-            </div>
-            <div className="flex flex-col gap-[7px]">
-              {animatedCardInCompleted && (
-                <KanbanCard {...heroColumns.animatedCard} entering={heroState === "entering"} />
-              )}
-              {heroColumns.completed.map((card) => (
-                <KanbanCard key={card.name} {...card} />
-              ))}
-            </div>
-          </div>
+        <div className="landing-hero-demo drop-shadow-[0_8px_32px_rgba(107,98,88,0.10)]">
+          <KanbanDemo />
         </div>
       </section>
 
@@ -454,9 +301,9 @@ export default function LandingPage() {
               official curriculum.
             </h2>
             <p className="text-[1rem] leading-[1.65] text-[var(--text2)]">
-              Spiral maps directly to the Learn to Skate USA program. Every skill
-              in your track is already loaded in, organized by level, and ready
-              to work through.
+              Spiral maps directly to the Learn to Skate USA program. Every
+              skill in your track is already loaded in, organized by level, and
+              ready to work through.
             </p>
           </div>
 
@@ -470,9 +317,7 @@ export default function LandingPage() {
                 <div
                   key={track.title}
                   data-landing-reveal
-                  className={cn(
-                    "landing-reveal landing-reveal-scale h-full",
-                  )}
+                  className={cn("landing-reveal landing-reveal-scale h-full")}
                   style={{ transitionDelay: `${index * 90}ms` }}
                 >
                   <div
@@ -514,7 +359,10 @@ export default function LandingPage() {
         id="section-skills"
         className="mx-auto grid w-full max-w-[1080px] grid-cols-2 items-center gap-16 px-8 pt-[72px] max-lg:grid-cols-1 max-sm:px-5"
       >
-        <div data-landing-reveal className="landing-reveal landing-reveal-from-left">
+        <div
+          data-landing-reveal
+          className="landing-reveal landing-reveal-from-left"
+        >
           <p className="mb-[10px] text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[var(--peri-dim)]">
             Skill notes
           </p>
@@ -595,7 +443,9 @@ export default function LandingPage() {
                   <div
                     className={cn(
                       "h-[72px] rounded-[8px] border border-[var(--border)] bg-[var(--secondary)] px-[11px] py-[9px] text-[12px] leading-[1.5]",
-                      card.muted ? "text-[var(--text3)]" : "text-[var(--text2)]",
+                      card.muted
+                        ? "text-[var(--text3)]"
+                        : "text-[var(--text2)]",
                     )}
                   >
                     {card.note}
@@ -692,8 +542,7 @@ export default function LandingPage() {
                       day.sessions.length > 0 &&
                         !day.otherMonth &&
                         "border-[var(--border)] bg-[#fbf9f5]",
-                      day.isSelected &&
-                        "border-[#c5c9e8] bg-[var(--accent)]",
+                      day.isSelected && "border-[#c5c9e8] bg-[var(--accent)]",
                     )}
                   >
                     <div className="mb-[3px] flex min-h-5 items-center justify-between">

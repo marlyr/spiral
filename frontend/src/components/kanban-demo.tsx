@@ -3,13 +3,28 @@ import { CategoryBadge } from "@/components/category-badge";
 import { statusStyles } from "@/lib/status-styles";
 import type { SkillCategory, SkillStatus } from "@/types";
 
-const STATIC_SKILLS: { id: number; name: string; status: SkillStatus; category: SkillCategory }[] = [
+const STATIC_SKILLS: {
+  id: number;
+  name: string;
+  status: SkillStatus;
+  category: SkillCategory;
+}[] = [
   { id: 1, name: "Waltz jump", status: "not_started", category: "jump" },
   { id: 2, name: "T-stop", status: "not_started", category: "foundation" },
-  { id: 3, name: "Forward crossovers", status: "completed", category: "footwork" },
+  {
+    id: 3,
+    name: "Forward crossovers",
+    status: "completed",
+    category: "footwork",
+  },
 ];
 
-const ANIMATED_SKILL: { id: number; name: string; status: SkillStatus; category: SkillCategory } = {
+const ANIMATED_SKILL: {
+  id: number;
+  name: string;
+  status: SkillStatus;
+  category: SkillCategory;
+} = {
   id: 4,
   name: "Two-foot spin",
   status: "working_on",
@@ -61,11 +76,13 @@ function DemoCard({
         border: ghost
           ? "1.5px dashed var(--border)"
           : highlighted
-          ? "1px solid var(--primary)"
-          : "1px solid var(--border)",
+            ? "1px solid var(--primary)"
+            : "1px solid var(--border)",
         boxShadow: highlighted ? "0 0 0 2px var(--accent)" : undefined,
         opacity: ghost ? 0.3 : 1,
-        transform: entering ? "scale(0.9) translateY(4px)" : "scale(1) translateY(0)",
+        transform: entering
+          ? "scale(0.9) translateY(4px)"
+          : "scale(1) translateY(0)",
         transition:
           "opacity 220ms ease, transform 350ms cubic-bezier(0.34,1.56,0.64,1), border-color 150ms ease, box-shadow 150ms ease",
       }}
@@ -100,7 +117,9 @@ function DemoColumn({
     >
       <div className="flex items-center justify-between pb-3 border-b border-border">
         <div className="flex items-center gap-2">
-          <span className={`w-[6px] h-[6px] rounded-full flex-shrink-0 ${dotColor}`} />
+          <span
+            className={`w-[6px] h-[6px] rounded-full flex-shrink-0 ${dotColor}`}
+          />
           <span
             className="text-[11px] font-medium tracking-widest uppercase"
             style={{ color: "var(--peri-dim)" }}
@@ -112,7 +131,9 @@ function DemoColumn({
           {count}
         </span>
       </div>
-      <div className="flex flex-col gap-2" style={{ minHeight: "144px" }}>{children}</div>
+      <div className="flex flex-col gap-2" style={{ minHeight: "144px" }}>
+        {children}
+      </div>
     </div>
   );
 }
@@ -145,7 +166,9 @@ export function KanbanDemo() {
     let active = true;
 
     function s(ms: number, fn: () => void) {
-      const id = setTimeout(() => { if (active) fn(); }, ms);
+      const id = setTimeout(() => {
+        if (active) fn();
+      }, ms);
       timers.push(id);
     }
 
@@ -316,7 +339,12 @@ export function KanbanDemo() {
 
       <DemoColumn status="working_on" count={cardInCompleted ? 0 : 1}>
         {/* Always in DOM so the column never shrinks */}
-        <div style={{ opacity: cardInCompleted ? 0 : 1, transition: "opacity 200ms ease" }}>
+        <div
+          style={{
+            opacity: cardInCompleted ? 0 : 1,
+            transition: "opacity 200ms ease",
+          }}
+        >
           <DemoCard
             name={ANIMATED_SKILL.name}
             category={ANIMATED_SKILL.category}
@@ -334,7 +362,12 @@ export function KanbanDemo() {
           <DemoCard key={s.id} name={s.name} category={s.category} />
         ))}
         {/* Always in DOM so the column never grows */}
-        <div style={{ opacity: cardInCompleted ? 1 : 0, transition: "opacity 220ms ease" }}>
+        <div
+          style={{
+            opacity: cardInCompleted ? 1 : 0,
+            transition: "opacity 220ms ease",
+          }}
+        >
           <DemoCard
             name={ANIMATED_SKILL.name}
             category={ANIMATED_SKILL.category}
@@ -359,7 +392,10 @@ export function KanbanDemo() {
             borderRadius: "8px",
           }}
         >
-          <DemoCard name={ANIMATED_SKILL.name} category={ANIMATED_SKILL.category} />
+          <DemoCard
+            name={ANIMATED_SKILL.name}
+            category={ANIMATED_SKILL.category}
+          />
         </div>
       )}
 
