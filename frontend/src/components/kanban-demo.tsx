@@ -1,18 +1,19 @@
 import { useEffect, useRef, useState } from "react";
+import { CategoryBadge } from "@/components/category-badge";
 import { statusStyles } from "@/lib/status-styles";
-import type { SkillStatus } from "@/types";
+import type { SkillCategory, SkillStatus } from "@/types";
 
-const STATIC_SKILLS = [
-  { id: 1, name: "Two-foot glide", status: "not_started" as SkillStatus, category: "Foundation" },
-  { id: 2, name: "Forward swizzles", status: "not_started" as SkillStatus, category: "Edge" },
-  { id: 3, name: "Waltz jump", status: "completed" as SkillStatus, category: "Jump" },
+const STATIC_SKILLS: { id: number; name: string; status: SkillStatus; category: SkillCategory }[] = [
+  { id: 1, name: "Waltz jump", status: "not_started", category: "jump" },
+  { id: 2, name: "T-stop", status: "not_started", category: "foundation" },
+  { id: 3, name: "Forward crossovers", status: "completed", category: "footwork" },
 ];
 
-const ANIMATED_SKILL = {
+const ANIMATED_SKILL: { id: number; name: string; status: SkillStatus; category: SkillCategory } = {
   id: 4,
-  name: "Forward crossovers",
-  status: "working_on" as SkillStatus,
-  category: "Footwork",
+  name: "Two-foot spin",
+  status: "working_on",
+  category: "spin",
 };
 
 function CursorSVG({ grabbing }: { grabbing: boolean }) {
@@ -48,7 +49,7 @@ function DemoCard({
   entering = false,
 }: {
   name: string;
-  category: string;
+  category: SkillCategory;
   highlighted?: boolean;
   ghost?: boolean;
   entering?: boolean;
@@ -75,12 +76,9 @@ function DemoCard({
       >
         {name}
       </p>
-      <span
-        className="text-[11px]"
-        style={{ color: "var(--text3)", visibility: ghost ? "hidden" : "visible" }}
-      >
-        {category}
-      </span>
+      <div style={{ visibility: ghost ? "hidden" : "visible" }}>
+        <CategoryBadge category={category} />
+      </div>
     </div>
   );
 }
@@ -114,7 +112,7 @@ function DemoColumn({
           {count}
         </span>
       </div>
-      <div className="flex flex-col gap-2">{children}</div>
+      <div className="flex flex-col gap-2" style={{ minHeight: "144px" }}>{children}</div>
     </div>
   );
 }
@@ -317,14 +315,15 @@ export function KanbanDemo() {
       </DemoColumn>
 
       <DemoColumn status="working_on" count={cardInCompleted ? 0 : 1}>
-        {!cardInCompleted && (
+        {/* Always in DOM so the column never shrinks */}
+        <div style={{ opacity: cardInCompleted ? 0 : 1, transition: "opacity 200ms ease" }}>
           <DemoCard
             name={ANIMATED_SKILL.name}
             category={ANIMATED_SKILL.category}
             highlighted={cardHighlighted}
-            ghost={cardGhost}
+            ghost={cardGhost || cardInCompleted}
           />
-        )}
+        </div>
       </DemoColumn>
 
       <DemoColumn
@@ -334,13 +333,14 @@ export function KanbanDemo() {
         {staticComp.map((s) => (
           <DemoCard key={s.id} name={s.name} category={s.category} />
         ))}
-        {cardInCompleted && (
+        {/* Always in DOM so the column never grows */}
+        <div style={{ opacity: cardInCompleted ? 1 : 0, transition: "opacity 220ms ease" }}>
           <DemoCard
             name={ANIMATED_SKILL.name}
             category={ANIMATED_SKILL.category}
             entering={destEntering}
           />
-        )}
+        </div>
       </DemoColumn>
 
       {floatVisible && (
