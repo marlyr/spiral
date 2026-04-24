@@ -1,15 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import type { SkatingTrack } from "@/types";
-import api from "@/lib/api";
-import { TrackCard } from "@/components/track-card";
 
-const tracks = [
-  { id: 1, name: "basic" as SkatingTrack },
-  { id: 2, name: "adult" as SkatingTrack },
-  { id: 3, name: "pre_freeskate" as SkatingTrack },
-  { id: 4, name: "freeskate" as SkatingTrack },
-];
+import api from "@/lib/api";
+import { curriculumTracks } from "@/lib/track-details";
+import { TrackCard } from "@/components/track-card";
+import type { SkatingTrack } from "@/types";
 
 export function TrackSelection() {
   const [generalError, setGeneralError] = useState(false);
@@ -26,24 +21,37 @@ export function TrackSelection() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen gap-8">
-      <h1 className="text-4xl font-semibold tracking-tight">
-        Choose your track
-      </h1>
-      <div className="flex flex-row gap-8">
-        {tracks.map((track) => (
-          <TrackCard
-            key={track.id}
-            track={track.name}
-            onSelect={handleSelect}
-          />
-        ))}
+    <div className="min-h-screen px-5 py-10 text-[var(--foreground)]">
+      <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-[1080px] flex-col justify-center">
+        <div className="max-w-[560px]">
+          <p className="mb-3 text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-[var(--peri-dim)]">
+            Learn to Skate USA
+          </p>
+          <h1 className="text-[clamp(2.3rem,4vw,3.1rem)] leading-[1.08] font-extrabold tracking-[-0.03em]">
+            Choose your track.
+          </h1>
+          <p className="mt-4 text-[1rem] leading-[1.7] text-[var(--text2)]">
+            Pick the curriculum that matches your skating path. You can update
+            it later if your focus changes.
+          </p>
+        </div>
+
+        <div className="mt-10 grid auto-rows-fr grid-cols-2 gap-4 max-md:grid-cols-1">
+          {curriculumTracks.map((track) => (
+            <TrackCard
+              key={track.track}
+              track={track.track}
+              onSelect={handleSelect}
+            />
+          ))}
+        </div>
+
+        {generalError && (
+          <p className="mt-5 text-sm text-red-500">
+            Something went wrong, please try again
+          </p>
+        )}
       </div>
-      {generalError && (
-        <p className="text-red-500 text-sm">
-          Something went wrong, please try again
-        </p>
-      )}
     </div>
   );
 }
