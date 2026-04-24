@@ -34,20 +34,20 @@ const ANIMATED_SKILL: {
 function CursorSVG({ grabbing }: { grabbing: boolean }) {
   return (
     <svg
-      width="16"
-      height="20"
+      width="13"
+      height="16"
       viewBox="0 0 16 20"
       style={{
         display: "block",
-        filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.3))",
+        filter: "drop-shadow(0 2px 4px rgba(90,99,168,0.45))",
         transform: grabbing ? "scale(0.88)" : "scale(1)",
         transition: "transform 120ms ease",
       }}
     >
       <path
         d="M2 1 L2 15.5 L5.5 12 L8 18 L9.5 17.3 L7 11.5 L12.5 11.5 Z"
-        fill={grabbing ? "#d4d4d4" : "white"}
-        stroke="rgba(0,0,0,0.5)"
+        fill={grabbing ? "#5a63a8" : "#7c85c8"}
+        stroke="rgba(20,18,15,0.55)"
         strokeWidth="1.5"
         strokeLinejoin="round"
         style={{ transition: "fill 120ms ease" }}
