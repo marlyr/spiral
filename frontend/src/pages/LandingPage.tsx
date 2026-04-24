@@ -5,15 +5,12 @@ import {
   ChartColumn,
   ChevronLeft,
   ChevronRight,
-  Footprints,
   Github,
-  Medal,
-  Orbit,
   Search,
-  PersonStanding,
   Users,
 } from "lucide-react";
 
+import { curriculumTracks } from "@/lib/track-details";
 import { cn } from "@/lib/utils";
 
 type SkillTone = "foundation" | "edge" | "footwork" | "jump" | "spin";
@@ -38,37 +35,6 @@ const heroColumns = {
     tone: "footwork" as SkillTone,
   },
 };
-
-const tracks = [
-  {
-    title: "Basic Skills",
-    description:
-      "Start here with balance, stroking, stops, crossovers, and your first one-foot skills.",
-    icon: Footprints,
-    iconClassName: "bg-[var(--accent)] text-[var(--primary)]",
-  },
-  {
-    title: "Adult",
-    description:
-      "The same fundamentals, reworked for adult beginners building confidence, strength, and control.",
-    icon: PersonStanding,
-    iconClassName: "bg-[var(--warm-bg)] text-[var(--warm)]",
-  },
-  {
-    title: "Pre-Freeskate",
-    description:
-      "The bridge into freestyle, where single jumps, spins, and stronger edge quality start to connect.",
-    icon: Orbit,
-    iconClassName: "bg-[#e2d8f0] text-[#6550a0]",
-  },
-  {
-    title: "Freeskate",
-    description:
-      "Advanced progression focused on stronger jumps, spins, and the consistency to skate full programs.",
-    icon: Medal,
-    iconClassName: "bg-[#efe3c8] text-[#8f6428]",
-  },
-];
 
 const deckCards = [
   {
@@ -498,7 +464,7 @@ export default function LandingPage() {
             ref={trackGridRef}
             className="grid auto-rows-fr grid-cols-2 gap-[10px] max-sm:grid-cols-1"
           >
-            {tracks.map((track, index) => {
+            {curriculumTracks.map((track, index) => {
               const Icon = track.icon;
               return (
                 <div

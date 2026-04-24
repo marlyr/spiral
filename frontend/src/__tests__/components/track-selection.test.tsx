@@ -24,7 +24,7 @@ describe("TrackSelection", () => {
       </MemoryRouter>,
     );
 
-    await user.click(screen.getAllByText("basic")[0]);
+    await user.click(screen.getByRole("button", { name: /basic skills/i }));
 
     expect(await screen.findByText("Dashboard Page")).toBeInTheDocument();
   });
@@ -45,7 +45,7 @@ describe("TrackSelection", () => {
       </MemoryRouter>,
     );
 
-    await user.click(screen.getAllByText("basic")[0]);
+    await user.click(screen.getByRole("button", { name: /basic skills/i }));
 
     expect(
       await screen.findByText("Something went wrong, please try again"),
