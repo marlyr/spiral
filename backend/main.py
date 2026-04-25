@@ -36,16 +36,3 @@ app.include_router(skills.router)
 @app.get("/")
 def read_root():
     return {"message": "Skating Tracker API is running"}
-
-
-@app.get("/db-test")
-def db_test():
-    try:
-        from sqlalchemy import text
-        from database import SessionLocal
-        db = SessionLocal()
-        db.execute(text("SELECT 1"))
-        db.close()
-        return {"status": "ok"}
-    except Exception as e:
-        return {"status": "error", "type": type(e).__name__, "detail": str(e)}
