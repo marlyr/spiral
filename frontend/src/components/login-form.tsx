@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/lib/supabase";
+import { getAuthenticatedRedirectPath } from "@/lib/auth-redirect";
 
 export function LoginForm({
   className,
@@ -38,7 +39,12 @@ export function LoginForm({
     if (error) {
       setGeneralError(true);
     } else {
-      navigate("/dashboard");
+      try {
+        const path = await getAuthenticatedRedirectPath();
+        navigate(path, { replace: true });
+      } catch {
+        setGeneralError(true);
+      }
     }
   }
 

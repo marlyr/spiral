@@ -1,8 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { HttpResponse, http } from "msw";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { createMockSupabase } from "@/test-utils/mock-supabase";
+import { server } from "@/test-utils/msw-server";
 
 async function loadLoginForm() {
   vi.resetModules();
@@ -21,6 +23,10 @@ function renderLoginForm(
       <Routes>
         <Route path="/login" element={<LoginForm />} />
         <Route path="/dashboard" element={<div>Dashboard Page</div>} />
+        <Route
+          path="/track-selection"
+          element={<div>Track Selection Page</div>}
+        />
       </Routes>
     </MemoryRouter>,
   );
@@ -74,5 +80,26 @@ describe("LoginForm", () => {
     await user.click(screen.getByRole("button", { name: "Login" }));
 
     expect(await screen.findByText("Dashboard Page")).toBeInTheDocument();
+  });
+
+  it("navigates to /track-selection when the user has no track", async () => {
+    server.use(
+      http.get("http://localhost:3000/users/profile", () =>
+        HttpResponse.json({
+          id: "user-1",
+          email: "skater@example.com",
+          active_track: null,
+        }),
+      ),
+    );
+    const { LoginForm } = await loadLoginForm();
+    const user = userEvent.setup();
+    renderLoginForm(LoginForm);
+
+    await user.type(screen.getByLabelText("Email"), "skater@example.com");
+    await user.type(screen.getByLabelText("Password"), "secret123");
+    await user.click(screen.getByRole("button", { name: "Login" }));
+
+    expect(await screen.findByText("Track Selection Page")).toBeInTheDocument();
   });
 });

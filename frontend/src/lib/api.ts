@@ -26,8 +26,10 @@ api.interceptors.response.use(
   async (error) => {
     const status = error.response?.status;
     const isAuthRoute = [
+      "/auth/callback",
       "/login",
       "/register",
+      "/check-email",
       "/forgot-password",
       "/reset-password",
     ].includes(window.location.pathname);

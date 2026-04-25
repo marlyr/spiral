@@ -6,11 +6,13 @@ import { server } from "@/test-utils/msw-server";
 import { createMockSupabase } from "@/test-utils/mock-supabase";
 import { makeSession } from "@/test-utils/fixtures";
 
-async function loadAuthCallback() {
+async function loadAuthCallback(
+  session: ReturnType<typeof makeSession> | null = makeSession(),
+) {
   vi.resetModules();
   const mockSupabase = createMockSupabase();
   mockSupabase.supabase.auth.getSession.mockResolvedValue({
-    data: { session: makeSession() },
+    data: { session },
   });
   vi.doMock("@/lib/supabase", () => ({ supabase: mockSupabase.supabase }));
   const { default: AuthCallback } = await import("@/pages/AuthCallback");
@@ -46,12 +48,8 @@ afterEach(() => {
 
 describe("AuthCallback", () => {
   it("navigates to /dashboard when the signed-in user already has a track", async () => {
-    const { AuthCallback, mockSupabase } = await loadAuthCallback();
+    const { AuthCallback } = await loadAuthCallback();
     renderAuthCallback(AuthCallback);
-
-    await act(async () => {
-      await mockSupabase.emitAuthStateChange("SIGNED_IN", makeSession());
-    });
 
     expect(await screen.findByText("Dashboard Page")).toBeInTheDocument();
   });
@@ -67,18 +65,14 @@ describe("AuthCallback", () => {
       ),
     );
 
-    const { AuthCallback, mockSupabase } = await loadAuthCallback();
+    const { AuthCallback } = await loadAuthCallback();
     renderAuthCallback(AuthCallback);
-
-    await act(async () => {
-      await mockSupabase.emitAuthStateChange("SIGNED_IN", makeSession());
-    });
 
     expect(await screen.findByText("Track Selection Page")).toBeInTheDocument();
   });
 
   it("navigates to /reset-password for password recovery events", async () => {
-    const { AuthCallback, mockSupabase } = await loadAuthCallback();
+    const { AuthCallback, mockSupabase } = await loadAuthCallback(null);
     renderAuthCallback(AuthCallback);
 
     await act(async () => {
