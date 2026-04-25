@@ -13,13 +13,16 @@ router = APIRouter(prefix="/skills", tags=["skills"])
 
 @router.get("/", response_model=List[UserSkillStatusResponse])
 def get_skills(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    user_skills = (
-        db.query(UserSkillStatus)
-        .join(UserSkillStatus.skill)
-        .filter(UserSkillStatus.user_id == current_user.id)
-        .filter(Skill.track == current_user.active_track)
-        .all()
-    )
+    try:
+        user_skills = (
+            db.query(UserSkillStatus)
+            .join(UserSkillStatus.skill)
+            .filter(UserSkillStatus.user_id == current_user.id)
+            .filter(Skill.track == current_user.active_track)
+            .all()
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
     return [
         {
