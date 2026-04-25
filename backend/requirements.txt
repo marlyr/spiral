@@ -4,5 +4,5 @@ sqlalchemy
 psycopg2-binary
 python-dotenv
 bcrypt
-PyJWT
+PyJWT[cryptography]
 python-multipart
