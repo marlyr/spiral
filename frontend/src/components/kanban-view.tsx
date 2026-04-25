@@ -20,6 +20,10 @@ export function KanbanView() {
       try {
         const response = await api.get("/skills/");
         console.log(response);
+        if (!Array.isArray(response.data)) {
+          setFetchError(true);
+          return;
+        }
         setSkills(response.data);
       } catch (error) {
         console.log(error);
