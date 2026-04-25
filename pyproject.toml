@@ -1,3 +1,18 @@
+[project]
+name = "spiral"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "sqlalchemy",
+    "psycopg2-binary",
+    "python-dotenv",
+    "bcrypt",
+    "PyJWT",
+    "python-multipart",
+]
+
 [tool.ruff]
 line-length = 100
 target-version = "py312"
