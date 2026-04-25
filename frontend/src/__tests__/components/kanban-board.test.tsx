@@ -1,4 +1,5 @@
 import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { KanbanBoard } from "@/components/kanban-board";
 import { makeSkill } from "@/test-utils/fixtures";
@@ -9,8 +10,46 @@ vi.mock("@/lib/supabase", async () => {
 });
 
 vi.mock("@dnd-kit/react", () => ({
-  DragDropProvider: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
+  DragDropProvider: ({
+    children,
+    onDragEnd,
+  }: {
+    children: React.ReactNode;
+    onDragEnd: (event: {
+      operation: {
+        source?: { id: number };
+        target?: { id: string };
+      };
+    }) => void;
+  }) => (
+    <div>
+      {children}
+      <button
+        type="button"
+        onClick={() =>
+          onDragEnd({
+            operation: {
+              source: { id: 1 },
+              target: { id: "completed" },
+            },
+          })
+        }
+      >
+        Complete drag
+      </button>
+      <button
+        type="button"
+        onClick={() =>
+          onDragEnd({
+            operation: {
+              source: { id: 1 },
+            },
+          })
+        }
+      >
+        Incomplete drag
+      </button>
+    </div>
   ),
   useDraggable: () => ({ ref: vi.fn() }),
   useDroppable: () => ({ ref: vi.fn() }),
@@ -57,5 +96,37 @@ describe("KanbanBoard", () => {
     expect(
       within(getColumn("Completed")).getByText("Two-foot spin"),
     ).toBeInTheDocument();
+  });
+
+  it("calls the status change handler when a skill is dropped onto a column", async () => {
+    const user = userEvent.setup();
+    const onSkillStatusChange = vi.fn();
+
+    render(
+      <KanbanBoard
+        skills={[makeSkill({ id: 1, name: "Forward swizzles" })]}
+        onSkillStatusChange={onSkillStatusChange}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Complete drag" }));
+
+    expect(onSkillStatusChange).toHaveBeenCalledWith(1, "completed");
+  });
+
+  it("ignores drag events without a drop target", async () => {
+    const user = userEvent.setup();
+    const onSkillStatusChange = vi.fn();
+
+    render(
+      <KanbanBoard
+        skills={[makeSkill({ id: 1, name: "Forward swizzles" })]}
+        onSkillStatusChange={onSkillStatusChange}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Incomplete drag" }));
+
+    expect(onSkillStatusChange).not.toHaveBeenCalled();
   });
 });

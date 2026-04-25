@@ -102,4 +102,23 @@ describe("LoginForm", () => {
 
     expect(await screen.findByText("Track Selection Page")).toBeInTheDocument();
   });
+
+  it("shows an error when login succeeds but the profile lookup fails", async () => {
+    server.use(
+      http.get("http://localhost:3000/users/profile", () =>
+        HttpResponse.json({ message: "Failed" }, { status: 500 }),
+      ),
+    );
+    const { LoginForm } = await loadLoginForm();
+    const user = userEvent.setup();
+    renderLoginForm(LoginForm);
+
+    await user.type(screen.getByLabelText("Email"), "skater@example.com");
+    await user.type(screen.getByLabelText("Password"), "secret123");
+    await user.click(screen.getByRole("button", { name: "Login" }));
+
+    expect(
+      await screen.findByText("Incorrect email or password"),
+    ).toBeInTheDocument();
+  });
 });

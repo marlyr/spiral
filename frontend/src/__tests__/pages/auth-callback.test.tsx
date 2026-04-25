@@ -82,6 +82,33 @@ describe("AuthCallback", () => {
     expect(await screen.findByText("Reset Password Page")).toBeInTheDocument();
   });
 
+  it("navigates after a signed-in auth event", async () => {
+    const { AuthCallback, mockSupabase } = await loadAuthCallback(null);
+    renderAuthCallback(AuthCallback);
+
+    await act(async () => {
+      await mockSupabase.emitAuthStateChange("SIGNED_IN", makeSession());
+    });
+
+    expect(await screen.findByText("Dashboard Page")).toBeInTheDocument();
+  });
+
+  it("shows an error when the authenticated redirect lookup fails", async () => {
+    server.use(
+      http.get("http://localhost:3000/users/profile", () =>
+        HttpResponse.json({ message: "Failed" }, { status: 500 }),
+      ),
+    );
+    const { AuthCallback } = await loadAuthCallback();
+    renderAuthCallback(AuthCallback);
+
+    expect(
+      await screen.findByText(
+        "We couldn't finish signing you in. Please try logging in.",
+      ),
+    ).toBeInTheDocument();
+  });
+
   it("unsubscribes from auth state changes on unmount", async () => {
     const { AuthCallback, mockSupabase } = await loadAuthCallback();
     const { unmount } = renderAuthCallback(AuthCallback);
