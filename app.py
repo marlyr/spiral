@@ -6,4 +6,4 @@ BACKEND_DIR = Path(__file__).parent / "backend"
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
-from main import app  # noqa: E402
+from main import app  # noqa: E402,F401
