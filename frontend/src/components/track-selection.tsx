@@ -8,15 +8,19 @@ import type { SkatingTrack } from "@/types";
 
 export function TrackSelection() {
   const [generalError, setGeneralError] = useState(false);
+  const [pendingTrack, setPendingTrack] = useState<SkatingTrack | null>(null);
   const navigate = useNavigate();
 
   async function handleSelect(track: SkatingTrack) {
+    if (pendingTrack) return;
+    setPendingTrack(track);
     setGeneralError(false);
     try {
       await api.patch("/users/track", { active_track: track });
       navigate("/dashboard");
     } catch {
       setGeneralError(true);
+      setPendingTrack(null);
     }
   }
 
@@ -42,6 +46,8 @@ export function TrackSelection() {
               key={track.track}
               track={track.track}
               onSelect={handleSelect}
+              disabled={!!pendingTrack}
+              selected={pendingTrack === track.track}
             />
           ))}
         </div>
