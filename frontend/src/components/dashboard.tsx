@@ -3,7 +3,7 @@ import { Navbar } from "@/components/navbar";
 
 export function Dashboard() {
   return (
-    <div>
+    <div className="w-full">
       <div className="flex justify-center pt-4">
         <Navbar />
       </div>

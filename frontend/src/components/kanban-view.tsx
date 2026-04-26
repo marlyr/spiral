@@ -9,9 +9,59 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
+function SkeletonCard() {
+  return (
+    <div className="flex flex-col gap-1.5 bg-background border border-border rounded-lg px-3 py-[10px]">
+      <div className="h-3 bg-muted rounded animate-pulse w-3/4" />
+      <div className="h-3 bg-muted rounded animate-pulse w-1/2" />
+      <div className="h-4 bg-muted rounded-full animate-pulse w-14 mt-0.5" />
+    </div>
+  );
+}
+
+function SkeletonColumn() {
+  return (
+    <div
+      className="bg-card border border-border rounded-xl p-4 flex flex-col gap-3"
+      style={{ borderTopWidth: "2px", borderTopColor: "var(--border)" }}
+    >
+      <div className="flex items-center justify-between pb-3 border-b border-border">
+        <div className="flex items-center gap-2">
+          <div className="w-[6px] h-[6px] rounded-full bg-muted animate-pulse" />
+          <div className="h-2.5 bg-muted rounded animate-pulse w-20" />
+        </div>
+        <div className="h-2.5 bg-muted rounded animate-pulse w-3" />
+      </div>
+      <div className="flex flex-col gap-2">
+        <SkeletonCard />
+        <SkeletonCard />
+      </div>
+    </div>
+  );
+}
+
+function SkeletonLevel() {
+  return (
+    <div className="rounded-xl border border-border mb-3 overflow-hidden shadow-md bg-card">
+      <div className="w-full flex items-center justify-between px-4 py-3 bg-card border-b border-border">
+        <div className="h-2.5 bg-muted rounded animate-pulse w-14" />
+        <div className="w-4 h-4 bg-muted rounded animate-pulse" />
+      </div>
+      <div className="p-3 bg-card">
+        <div className="grid grid-cols-3 gap-4">
+          <SkeletonColumn />
+          <SkeletonColumn />
+          <SkeletonColumn />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function KanbanView() {
   const levels = [1, 2, 3, 4, 5, 6];
   const [skills, setSkills] = useState<UserSkill[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [fetchError, setFetchError] = useState(false);
   const [openLevels, setOpenLevels] = useState(new Set(levels));
 
@@ -28,7 +78,8 @@ export function KanbanView() {
       } catch (error) {
         console.log(error);
         setFetchError(true);
-        return;
+      } finally {
+        setIsLoading(false);
       }
     })();
   }, []);
@@ -69,43 +120,49 @@ export function KanbanView() {
     <>
       {fetchError && <h2>Something went wrong</h2>}
       <div className="max-w-5xl mx-auto px-6">
-        <button
-          onClick={toggleAll}
-          className="block ml-auto mb-4 px-4 py-1.5 rounded-full border border-border text-[12px] text-muted-foreground bg-card hover:bg-muted transition-all"
-        >
-          {openLevels.size === 0 ? "Expand All" : "Collapse All"}
-        </button>
-        {levels.map((level) => (
-          <Collapsible
-            key={level}
-            className="rounded-xl border border-border mb-3 overflow-hidden shadow-md bg-card"
-            open={openLevels.has(level)}
-            onOpenChange={(isOpen) => toggleLevel(isOpen, level)}
-          >
-            <CollapsibleTrigger className="w-full flex items-center justify-between px-4 py-3 bg-card border-b border-border hover:bg-muted/30 transition-colors">
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[var(--text2)]">
-                  Level {level}
-                </span>
-                <span className="text-[10px] text-muted-foreground">
-                  ({skills.filter((s) => s.level === level).length})
-                </span>
-              </div>
-              <ChevronRight
-                className={`w-4 h-4 text-muted-foreground transition-transform ${openLevels.has(level) ? "rotate-90" : ""}`}
-              />
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              <div className="p-3 bg-card">
-                <KanbanBoard
-                  key={level}
-                  skills={skills.filter((s) => s.level === level)}
-                  onSkillStatusChange={updateSkillStatus}
-                />
-              </div>
-            </CollapsibleContent>
-          </Collapsible>
-        ))}
+        {isLoading ? (
+          levels.map((level) => <SkeletonLevel key={level} />)
+        ) : (
+          <>
+            <button
+              onClick={toggleAll}
+              className="block ml-auto mb-4 px-4 py-1.5 rounded-full border border-border text-[12px] text-muted-foreground bg-card hover:bg-muted transition-all"
+            >
+              {openLevels.size === 0 ? "Expand All" : "Collapse All"}
+            </button>
+            {levels.map((level) => (
+              <Collapsible
+                key={level}
+                className="rounded-xl border border-border mb-3 overflow-hidden shadow-md bg-card"
+                open={openLevels.has(level)}
+                onOpenChange={(isOpen) => toggleLevel(isOpen, level)}
+              >
+                <CollapsibleTrigger className="w-full flex items-center justify-between px-4 py-3 bg-card border-b border-border hover:bg-muted/30 transition-colors">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[var(--text2)]">
+                      Level {level}
+                    </span>
+                    <span className="text-[10px] text-muted-foreground">
+                      ({skills.filter((s) => s.level === level).length})
+                    </span>
+                  </div>
+                  <ChevronRight
+                    className={`w-4 h-4 text-muted-foreground transition-transform ${openLevels.has(level) ? "rotate-90" : ""}`}
+                  />
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <div className="p-3 bg-card">
+                    <KanbanBoard
+                      key={level}
+                      skills={skills.filter((s) => s.level === level)}
+                      onSkillStatusChange={updateSkillStatus}
+                    />
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            ))}
+          </>
+        )}
       </div>
     </>
   );
