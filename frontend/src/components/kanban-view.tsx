@@ -58,12 +58,17 @@ function SkeletonLevel() {
   );
 }
 
-export function KanbanView() {
+export function KanbanView({
+  openLevels,
+  onLevelToggle,
+}: {
+  openLevels: Set<number>;
+  onLevelToggle: (isOpen: boolean, level: number) => void;
+}) {
   const levels = [1, 2, 3, 4, 5, 6];
   const [skills, setSkills] = useState<UserSkill[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [fetchError, setFetchError] = useState(false);
-  const [openLevels, setOpenLevels] = useState(new Set(levels));
 
   useEffect(() => {
     (async () => {
@@ -100,42 +105,20 @@ export function KanbanView() {
     }
   };
 
-  const toggleLevel = (isOpen: boolean, level: number) => {
-    setOpenLevels((prevOpenLevels) => {
-      const next = new Set(prevOpenLevels);
-      if (isOpen) next.add(level);
-      else next.delete(level);
-      return next;
-    });
-  };
-
-  const toggleAll = () => {
-    const allCollapsed = openLevels.size === 0;
-    if (allCollapsed) {
-      setOpenLevels(new Set(levels));
-    } else setOpenLevels(new Set<number>());
-  };
-
   return (
     <>
       {fetchError && <h2>Something went wrong</h2>}
-      <div className="max-w-5xl mx-auto px-6">
+      <div className="max-w-5xl mx-auto px-6 mt-4">
         {isLoading ? (
           levels.map((level) => <SkeletonLevel key={level} />)
         ) : (
           <>
-            <button
-              onClick={toggleAll}
-              className="block ml-auto mb-4 px-4 py-1.5 rounded-full border border-border text-[12px] text-muted-foreground bg-card hover:bg-muted transition-all"
-            >
-              {openLevels.size === 0 ? "Expand All" : "Collapse All"}
-            </button>
             {levels.map((level) => (
               <Collapsible
                 key={level}
                 className="rounded-xl border border-border mb-3 overflow-hidden shadow-md bg-card"
                 open={openLevels.has(level)}
-                onOpenChange={(isOpen) => toggleLevel(isOpen, level)}
+                onOpenChange={(isOpen) => onLevelToggle(isOpen, level)}
               >
                 <CollapsibleTrigger className="w-full flex items-center justify-between px-4 py-3 bg-card border-b border-border hover:bg-muted/30 transition-colors">
                   <div className="flex items-center gap-2">
