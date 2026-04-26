@@ -37,7 +37,7 @@ export const curriculumTracks: TrackDetails[] = [
     track: "pre_freeskate",
     title: "Pre-Freeskate",
     description:
-      "The bridge into freestyle, where single jumps, spins, and stronger edge quality start to connect.",
+      "The bridge into freestyle, where spins, edge quality, and your first jumps start to connect.",
     icon: Orbit,
     iconClassName: "bg-[#e2d8f0] text-[#6550a0]",
   },
