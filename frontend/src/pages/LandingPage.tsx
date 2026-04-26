@@ -6,8 +6,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Github,
+  Route,
   Search,
-  Users,
 } from "lucide-react";
 
 import { KanbanDemo } from "@/components/kanban-demo";
@@ -93,10 +93,10 @@ const featureCards = [
     icon: ChartColumn,
   },
   {
-    title: "Coach Mode",
+    title: "Custom Tracks",
     description:
-      "Share your progress board with your coach, assign drills, and get feedback tied directly to your skills.",
-    icon: Users,
+      "Build your own curriculum with the skills that matter to you.",
+    icon: Route,
   },
 ];
 
