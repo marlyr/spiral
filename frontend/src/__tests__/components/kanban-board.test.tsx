@@ -9,6 +9,12 @@ vi.mock("@/lib/supabase", async () => {
   return { supabase: createMockSupabase().supabase };
 });
 
+vi.mock("@dnd-kit/react/sortable", () => ({
+  useSortable: () => ({ ref: vi.fn(), isDragSource: false }),
+  isSortableOperation: () => false,
+  isSortable: () => false,
+}));
+
 vi.mock("@dnd-kit/react", () => ({
   DragDropProvider: ({
     children,
@@ -51,7 +57,11 @@ vi.mock("@dnd-kit/react", () => ({
       </button>
     </div>
   ),
-  useDraggable: () => ({ ref: vi.fn() }),
+  DragOverlay: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
+  useDragDropMonitor: vi.fn(),
+  useDraggable: () => ({ ref: vi.fn(), isDragSource: false }),
   useDroppable: () => ({ ref: vi.fn() }),
 }));
 

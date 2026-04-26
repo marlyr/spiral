@@ -7,9 +7,11 @@ import { useDroppable } from "@dnd-kit/react";
 export function KanbanColumn({
   skills,
   status,
+  recentlyDropped,
 }: {
   skills: UserSkill[];
   status: SkillStatus;
+  recentlyDropped?: number | null;
 }) {
   const { ref } = useDroppable({ id: status });
   const { label, dotColor } = statusConfig[status];
@@ -37,8 +39,13 @@ export function KanbanColumn({
         </span>
       </div>
       <div className="flex flex-col gap-2">
-        {skills.map((skill) => (
-          <SkillCard key={skill.id} skill={skill} />
+        {skills.map((skill, i) => (
+          <SkillCard
+            key={skill.id}
+            skill={skill}
+            index={i}
+            isRecentlyDropped={recentlyDropped === skill.id}
+          />
         ))}
       </div>
     </div>
