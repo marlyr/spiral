@@ -53,7 +53,7 @@ const deckCards = [
     categoryClassName: "bg-[var(--sage-bg)] text-[#4d7a57] border-[#b8d8be]",
     status: "Working On",
     statusClassName: "bg-[var(--accent)] text-[#5a63a8] border-[#c5c9e8]",
-    note: "Keep weight on inside edge. Coach says look up more — arms out for balance.",
+    note: "Lean into the circle. Keep knees bent and use a sweeping motion for the cross.",
     caret: true,
   },
 ];
@@ -372,23 +372,10 @@ export default function LandingPage() {
             your way.
           </h2>
           <p className="mt-4 mb-6 max-w-[360px] text-[1rem] leading-[1.65] text-[var(--text2)]">
-            Click any skill card to open its detail view. Add personal notes,
-            coaching cues, or reminders, saved automatically as you type.
+            Click any skill card to open its detail view.
+            <br />
+            Add personal notes, coaching cues, or reminders.
           </p>
-          <div className="flex flex-col gap-[11px] text-[0.88rem] text-[var(--text2)]">
-            <div className="flex items-center gap-[10px]">
-              <span className="size-2 rounded-full bg-[var(--primary)]" />
-              See the skill&apos;s level, track, and category at a glance
-            </div>
-            <div className="flex items-center gap-[10px]">
-              <span className="size-2 rounded-full bg-[var(--primary)]" />
-              Write freeform notes, coaching cues, timestamps, and goals
-            </div>
-            <div className="flex items-center gap-[10px]">
-              <span className="size-2 rounded-full bg-[var(--primary)]" />
-              Autosaved, so your notes are always there when you return
-            </div>
-          </div>
         </div>
 
         <div
@@ -398,7 +385,7 @@ export default function LandingPage() {
           <div
             ref={deckRef}
             className={cn(
-              "landing-card-deck relative h-[280px] w-[300px]",
+              "landing-card-deck relative h-[220px] w-[300px]",
               deckVisible && "landing-card-deck-fanned",
             )}
           >
@@ -478,8 +465,8 @@ export default function LandingPage() {
             See every pattern.
           </h2>
           <p className="mt-[14px] max-w-[460px] text-[0.95rem] leading-[1.65] text-[var(--text2)]">
-            Track your ice time, add notes, tag session types, and build a
-            personal record that fuels your progress charts.
+            Track your ice time and reflect on your practices to stay on top of
+            your skating goals.
           </p>
         </div>
       </div>
