@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { UserSkill, SkillStatus } from "@/types";
 import { KanbanColumn } from "@/components/kanban-column";
 import { CategoryBadge } from "@/components/category-badge";
+import { loadOrder, saveOrder, syncWithParent } from "@/lib/kanban-order";
 
 import {
   DragDropProvider,
@@ -31,15 +32,6 @@ function FloatingCard({ skill }: { skill: UserSkill }) {
   );
 }
 
-function syncWithParent(prev: UserSkill[], next: UserSkill[]): UserSkill[] {
-  const nextIds = new Set(next.map((s) => s.id));
-  const prevIds = new Set(prev.map((s) => s.id));
-  const updated = prev
-    .filter((s) => nextIds.has(s.id))
-    .map((s) => next.find((p) => p.id === s.id)!);
-  const brandNew = next.filter((s) => !prevIds.has(s.id));
-  return [...updated, ...brandNew];
-}
 
 // Inner component — must live inside DragDropProvider to use useDragDropMonitor
 function KanbanBoardContent({
@@ -114,15 +106,19 @@ function KanbanBoardContent({
 
 export function KanbanBoard({
   skills,
+  level,
   onSkillStatusChange,
 }: {
   skills: UserSkill[];
+  level: number;
   onSkillStatusChange: (
     skillId: number,
     newStatus: SkillStatus,
   ) => Promise<void>;
 }) {
-  const [localSkills, setLocalSkills] = useState<UserSkill[]>(skills);
+  const [localSkills, setLocalSkills] = useState<UserSkill[]>(() =>
+    loadOrder(skills, level),
+  );
   const [draggingSkillId, setDraggingSkillId] = useState<number | null>(null);
   const [recentlyDropped, setRecentlyDropped] = useState<number | null>(null);
 
@@ -130,6 +126,15 @@ export function KanbanBoard({
   const preDragRef = useRef<UserSkill[]>([]);
   // Always-current ref so handleDragEnd reads latest localSkills
   const localSkillsRef = useRef(localSkills);
+  const recentlyDroppedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (recentlyDroppedTimerRef.current !== null) {
+        clearTimeout(recentlyDroppedTimerRef.current);
+      }
+    };
+  }, []);
   useEffect(() => {
     localSkillsRef.current = localSkills;
   }, [localSkills]);
@@ -166,9 +171,14 @@ export function KanbanBoard({
       ? (event.operation.target.group as SkillStatus)
       : (event.operation.target.id as SkillStatus);
 
+    saveOrder(localSkillsRef.current, level);
+    if (recentlyDroppedTimerRef.current !== null) {
+      clearTimeout(recentlyDroppedTimerRef.current);
+    }
+    setRecentlyDropped(skillId);
+    recentlyDroppedTimerRef.current = setTimeout(() => setRecentlyDropped(null), 500);
+
     if (originalStatus !== finalStatus) {
-      setRecentlyDropped(skillId);
-      setTimeout(() => setRecentlyDropped(null), 500);
       onSkillStatusChange(skillId, finalStatus);
     }
   };

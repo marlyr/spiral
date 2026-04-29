@@ -137,6 +137,7 @@ export function KanbanView({
                   <div className="p-3 bg-card">
                     <KanbanBoard
                       key={level}
+                      level={level}
                       skills={skills.filter((s) => s.level === level)}
                       onSkillStatusChange={updateSkillStatus}
                     />
