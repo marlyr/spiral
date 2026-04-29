@@ -1,6 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const port = Number(process.env.PLAYWRIGHT_PORT ?? 5173);
+const port = Number(process.env.PLAYWRIGHT_PORT ?? 5174);
 const baseURL = `http://127.0.0.1:${port}`;
 
 export default defineConfig({
@@ -20,7 +20,7 @@ export default defineConfig({
       VITE_SUPABASE_ANON_KEY: "test-anon-key",
       VITE_SUPABASE_URL: "http://127.0.0.1:54321",
     },
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: false,
     url: baseURL,
   },
   projects: [
