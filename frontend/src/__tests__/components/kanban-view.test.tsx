@@ -14,7 +14,6 @@ vi.mock("@/lib/supabase", async () => {
 
 vi.mock("@dnd-kit/react/sortable", () => ({
   useSortable: () => ({ ref: vi.fn(), isDragSource: false }),
-  isSortableOperation: () => false,
   isSortable: () => false,
 }));
 

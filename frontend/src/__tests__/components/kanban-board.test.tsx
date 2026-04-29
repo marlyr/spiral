@@ -11,7 +11,6 @@ vi.mock("@/lib/supabase", async () => {
 
 vi.mock("@dnd-kit/react/sortable", () => ({
   useSortable: () => ({ ref: vi.fn(), isDragSource: false }),
-  isSortableOperation: () => false,
   isSortable: () => false,
 }));
 
@@ -78,7 +77,7 @@ function getColumn(label: string) {
 
 describe("KanbanBoard", () => {
   it("renders the expected columns", () => {
-    render(<KanbanBoard skills={[]} onSkillStatusChange={vi.fn()} />);
+    render(<KanbanBoard skills={[]} level={1} onSkillStatusChange={vi.fn()} />);
 
     expect(screen.getByText("Not Started")).toBeInTheDocument();
     expect(screen.getByText("Working On")).toBeInTheDocument();
@@ -93,6 +92,7 @@ describe("KanbanBoard", () => {
           makeSkill({ id: 2, name: "Forward stroking", status: "working_on" }),
           makeSkill({ id: 3, name: "Two-foot spin", status: "completed" }),
         ]}
+        level={1}
         onSkillStatusChange={vi.fn()}
       />,
     );
@@ -115,6 +115,7 @@ describe("KanbanBoard", () => {
     render(
       <KanbanBoard
         skills={[makeSkill({ id: 1, name: "Forward swizzles" })]}
+        level={1}
         onSkillStatusChange={onSkillStatusChange}
       />,
     );
@@ -131,6 +132,7 @@ describe("KanbanBoard", () => {
     render(
       <KanbanBoard
         skills={[makeSkill({ id: 1, name: "Forward swizzles" })]}
+        level={1}
         onSkillStatusChange={onSkillStatusChange}
       />,
     );
