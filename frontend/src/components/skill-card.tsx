@@ -7,6 +7,17 @@ import { CategoryBadge } from "./category-badge";
 import { Dialog } from "./ui/dialog";
 import { SkillDetailModal } from "./skill-detail-modal";
 
+export function SkillCardBody({ skill }: { skill: UserSkill }) {
+  return (
+    <>
+      <p className="text-[13px] font-medium text-foreground line-clamp-3">
+        {skill.name}
+      </p>
+      <CategoryBadge category={skill.category} />
+    </>
+  );
+}
+
 export function SkillCard({
   skill,
   index,
@@ -68,9 +79,10 @@ export function SkillCard({
           >
             {skill.name}
           </p>
-          <div style={{ visibility: isDragSource ? "hidden" : "visible" }}>
-            <CategoryBadge category={skill.category} />
-          </div>
+          <CategoryBadge
+            category={skill.category}
+            style={{ visibility: isDragSource ? "hidden" : "visible" }}
+          />
         </div>
       </DialogTrigger>
       <SkillDetailModal skill={skill} />

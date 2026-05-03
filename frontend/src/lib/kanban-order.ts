@@ -17,7 +17,11 @@ export function loadOrder(skills: UserSkill[], level: number): UserSkill[] {
 }
 
 export function saveOrder(skills: UserSkill[], level: number): void {
-  localStorage.setItem(STORAGE_KEY(level), JSON.stringify(skills.map((s) => s.id)));
+  try {
+    localStorage.setItem(STORAGE_KEY(level), JSON.stringify(skills.map((s) => s.id)));
+  } catch {
+    // Storage quota exceeded — order just won't persist.
+  }
 }
 
 export function syncWithParent(prev: UserSkill[], next: UserSkill[]): UserSkill[] {

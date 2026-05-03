@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { UserSkill, SkillStatus } from "@/types";
 import { KanbanColumn } from "@/components/kanban-column";
-import { CategoryBadge } from "@/components/category-badge";
+import { SkillCardBody } from "@/components/skill-card";
 import { loadOrder, saveOrder, syncWithParent } from "@/lib/kanban-order";
 
 import {
@@ -20,18 +20,12 @@ function FloatingCard({ skill }: { skill: UserSkill }) {
       style={{
         border: "1px solid var(--primary)",
         boxShadow: "0 10px 28px rgba(0,0,0,0.16), 0 0 0 2px var(--primary)",
-        transform: "rotate(3deg) scale(1.04)",
-        transformOrigin: "center",
       }}
     >
-      <p className="text-[13px] font-medium text-foreground line-clamp-3">
-        {skill.name}
-      </p>
-      <CategoryBadge category={skill.category} />
+      <SkillCardBody skill={skill} />
     </div>
   );
 }
-
 
 // Inner component — must live inside DragDropProvider to use useDragDropMonitor
 function KanbanBoardContent({
@@ -43,7 +37,10 @@ function KanbanBoardContent({
   setLocalSkills: React.Dispatch<React.SetStateAction<UserSkill[]>>;
   recentlyDropped: number | null;
 }) {
+  const lastDragOver = useRef<{ source: number; target: string | number } | null>(null);
+
   useDragDropMonitor({
+    onDragStart: () => { lastDragOver.current = null; },
     onDragOver: (event) => {
       const source = event.operation.source;
       const target = event.operation.target;
@@ -51,6 +48,12 @@ function KanbanBoardContent({
 
       const sourceId = source.id as number;
       if (target.id === sourceId) return;
+
+      if (
+        lastDragOver.current?.source === sourceId &&
+        lastDragOver.current?.target === target.id
+      ) return;
+      lastDragOver.current = { source: sourceId, target: target.id };
 
       setLocalSkills((prev) => {
         const result = [...prev];
