@@ -143,9 +143,11 @@ export function KanbanBoard({
   }, [localSkills]);
 
   // Sync parent's data changes (rollbacks, new skills) while preserving local order
-  useEffect(() => {
+  const [prevSkills, setPrevSkills] = useState(skills);
+  if (prevSkills !== skills) {
+    setPrevSkills(skills);
     setLocalSkills((prev) => syncWithParent(prev, skills));
-  }, [skills]);
+  }
 
   const handleDragStart: DragStartEvent = (event) => {
     preDragRef.current = localSkillsRef.current;
@@ -188,7 +190,7 @@ export function KanbanBoard({
 
   const draggingSkill =
     draggingSkillId != null
-      ? localSkillsRef.current.find((s) => s.id === draggingSkillId)
+      ? localSkills.find((s) => s.id === draggingSkillId)
       : null;
 
   return (

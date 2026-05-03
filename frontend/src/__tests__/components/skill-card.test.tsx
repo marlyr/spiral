@@ -13,8 +13,11 @@ vi.mock("@dnd-kit/react", () => ({
   DragDropProvider: ({ children }: { children: React.ReactNode }) => (
     <div>{children}</div>
   ),
-  useDraggable: () => ({ ref: vi.fn() }),
   useDroppable: () => ({ ref: vi.fn() }),
+}));
+
+vi.mock("@dnd-kit/react/sortable", () => ({
+  useSortable: () => ({ ref: vi.fn(), isDragSource: false }),
 }));
 
 describe("SkillCard", () => {

@@ -1,4 +1,3 @@
-import { useEffect, useLayoutEffect, useState } from "react";
 import type { UserSkill } from "@/types";
 import { DialogTrigger } from "./ui/dialog";
 
@@ -24,33 +23,17 @@ export function SkillCard({
   isRecentlyDropped,
 }: {
   skill: UserSkill;
-  index: number;
+  index?: number;
   isRecentlyDropped?: boolean;
 }) {
   const { ref, isDragSource } = useSortable({
     id: skill.id,
-    index,
+    index: index ?? 0,
     group: skill.status,
     // OptimisticSortingPlugin physically moves DOM nodes during drag,
     // which desynchronises React's tree and causes a removeChild crash.
     plugins: [],
   });
-  const [entering, setEntering] = useState(false);
-
-  // Snap to compressed state synchronously before paint so there's no
-  // "normal → squish → spring" flash — the card is never seen at full
-  // size before the spring plays.
-  useLayoutEffect(() => {
-    if (!isRecentlyDropped) return;
-    setEntering(true);
-  }, [isRecentlyDropped]);
-
-  // After one frame at scale(0.9), remove the transform so the spring fires.
-  useEffect(() => {
-    if (!entering) return;
-    const id = setTimeout(() => setEntering(false), 50);
-    return () => clearTimeout(id);
-  }, [entering]);
 
   return (
     <Dialog>
@@ -61,15 +44,14 @@ export function SkillCard({
             isDragSource
               ? ""
               : "border border-border hover:border-[var(--border-mid)] hover:shadow-md hover:-translate-y-px"
-          }`}
+          } ${isRecentlyDropped ? "card-drop-spring" : ""}`}
           style={{
             border: isDragSource ? "1.5px dashed var(--border)" : undefined,
             opacity: isDragSource ? 0.3 : 1,
-            transform: entering ? "scale(0.9) translateY(4px)" : undefined,
-            // No transition while entering=true so the snap to scale(0.9) is
-            // instant; the spring only plays on the way back to normal.
-            transition: isDragSource || entering
+            transition: isDragSource
               ? "none"
+              : isRecentlyDropped
+              ? "opacity 220ms ease, border-color 150ms ease, box-shadow 150ms ease"
               : "transform 350ms cubic-bezier(0.34,1.56,0.64,1), opacity 220ms ease, border-color 150ms ease, box-shadow 150ms ease",
           }}
         >
