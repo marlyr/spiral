@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Clock, Zap, CheckCircle2 } from "lucide-react";
 import { CategoryBadge } from "@/components/category-badge";
 import { statusStyles } from "@/lib/status-styles";
 import type { SkillCategory, SkillStatus } from "@/types";
@@ -100,6 +101,12 @@ function DemoCard({
   );
 }
 
+const demoStatusIcons = {
+  not_started: Clock,
+  working_on: Zap,
+  completed: CheckCircle2,
+};
+
 function DemoColumn({
   status,
   count,
@@ -109,29 +116,37 @@ function DemoColumn({
   count: number;
   children?: React.ReactNode;
 }) {
-  const { label, color, dotColor } = statusStyles[status];
+  const { label, color, bg } = statusStyles[status];
+  const Icon = demoStatusIcons[status];
   return (
-    <div
-      className="bg-card border border-border rounded-xl p-4 flex flex-col gap-3"
-      style={{ borderTopWidth: "2px", borderTopColor: color }}
-    >
-      <div className="flex items-center justify-between pb-3 border-b border-border">
+    <div className="bg-card border border-border rounded-xl flex flex-col overflow-hidden">
+      <div
+        className="px-4 py-3 flex items-center justify-center gap-3"
+        style={{
+          backgroundColor: bg,
+          borderBottom: `1px solid ${color}30`,
+        }}
+      >
         <div className="flex items-center gap-2">
+          <Icon size={13} style={{ color }} strokeWidth={2.5} />
           <span
-            className={`w-[6px] h-[6px] rounded-full flex-shrink-0 ${dotColor}`}
-          />
-          <span
-            className="text-[11px] font-medium tracking-widest uppercase"
-            style={{ color: "var(--peri-dim)" }}
+            className="text-[12px] font-bold tracking-wide uppercase whitespace-nowrap"
+            style={{ color }}
           >
             {label}
           </span>
         </div>
-        <span className="text-[11px]" style={{ color: "var(--border-mid)" }}>
+        <span
+          className="text-[11px] font-semibold tabular-nums px-2 py-0.5 rounded-full"
+          style={{
+            backgroundColor: `${color}20`,
+            color,
+          }}
+        >
           {count}
         </span>
       </div>
-      <div className="flex flex-col gap-2" style={{ minHeight: "144px" }}>
+      <div className="flex flex-col gap-2 p-4" style={{ minHeight: "144px" }}>
         {children}
       </div>
     </div>
@@ -181,7 +196,7 @@ export function KanbanDemo() {
         return;
       }
 
-      const gap = 12;
+      const gap = 4;
       const colW = (W - 2 * gap) / 3;
 
       const srcX = colW + gap + colW / 2;
@@ -328,7 +343,7 @@ export function KanbanDemo() {
   return (
     <div
       ref={boardRef}
-      className="grid grid-cols-3 gap-3 relative"
+      className="grid grid-cols-3 gap-1 relative"
       style={{ overflow: "visible" }}
     >
       <DemoColumn status="not_started" count={staticNS.length}>
@@ -383,7 +398,7 @@ export function KanbanDemo() {
             position: "absolute",
             left: 0,
             top: 0,
-            width: "calc((100% - 24px) / 3)",
+            width: "calc((100% - 8px) / 3)",
             pointerEvents: "none",
             zIndex: 10,
             transform: `translate(${floatX}px, ${floatY}px) rotate(${floatRotate}deg) scale(1.04)`,
