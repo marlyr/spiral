@@ -2,11 +2,11 @@ import type { SkillCategory } from "@/types";
 import { Badge } from "@/components/badge";
 
 const categoryStyles: Record<string, { bg: string; color: string }> = {
-  jump: { bg: "#eeddd0", color: "#a0612e" },
-  spin: { bg: "#d4e6f6", color: "#3a6aa8" },
-  edge: { bg: "#d6ecdb", color: "#4d7a57" },
-  footwork: { bg: "#e2d8f0", color: "#6550a0" },
-  foundation: { bg: "#edd8cc", color: "#7a5040" },
+  jump: { bg: "var(--badge-jump-bg)", color: "var(--badge-jump-color)" },
+  spin: { bg: "var(--badge-spin-bg)", color: "var(--badge-spin-color)" },
+  edge: { bg: "var(--badge-edge-bg)", color: "var(--badge-edge-color)" },
+  footwork: { bg: "var(--badge-footwork-bg)", color: "var(--badge-footwork-color)" },
+  foundation: { bg: "var(--badge-foundation-bg)", color: "var(--badge-foundation-color)" },
 };
 
 export function CategoryBadge({
