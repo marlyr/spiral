@@ -76,7 +76,7 @@ export function KanbanView({
           return;
         }
         setSkills(response.data);
-      } catch (error) {
+      } catch {
         setFetchError(true);
       } finally {
         setIsLoading(false);

@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach } from "vitest";
+import { describe, expect, it, beforeEach, afterEach, vi } from "vitest";
 import { loadOrder, saveOrder, syncWithParent } from "@/lib/kanban-order";
 import { makeSkill } from "@/test-utils/fixtures";
 
@@ -40,7 +40,23 @@ describe("syncWithParent", () => {
 
 describe("loadOrder / saveOrder", () => {
   beforeEach(() => {
-    localStorage.clear();
+    const store = new Map<string, string>();
+    vi.stubGlobal("localStorage", {
+      getItem: vi.fn((key: string) => store.get(key) ?? null),
+      setItem: vi.fn((key: string, value: string) => {
+        store.set(key, value);
+      }),
+      removeItem: vi.fn((key: string) => {
+        store.delete(key);
+      }),
+      clear: vi.fn(() => {
+        store.clear();
+      }),
+    });
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
   });
 
   it("returns skills unchanged when no saved order exists", () => {
