@@ -1,6 +1,6 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { KanbanBoard } from "@/components/kanban-board";
 import { makeSkill } from "@/test-utils/fixtures";
 
@@ -76,6 +76,17 @@ function getColumn(label: string) {
 }
 
 describe("KanbanBoard", () => {
+  beforeEach(() => {
+    vi.stubGlobal("localStorage", {
+      getItem: vi.fn(() => null),
+      setItem: vi.fn(),
+    });
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
   it("renders the expected columns", () => {
     render(
       <KanbanBoard
@@ -118,7 +129,7 @@ describe("KanbanBoard", () => {
 
   it("calls the status change handler when a skill is dropped onto a column", async () => {
     const user = userEvent.setup();
-    const onSkillStatusChange = vi.fn();
+    const onSkillStatusChange = vi.fn().mockResolvedValue(true);
 
     render(
       <KanbanBoard
@@ -132,6 +143,27 @@ describe("KanbanBoard", () => {
     await user.click(screen.getByRole("button", { name: "Complete drag" }));
 
     expect(onSkillStatusChange).toHaveBeenCalledWith(1, "completed");
+  });
+
+  it("does not save order when a status update fails", async () => {
+    const user = userEvent.setup();
+    const onSkillStatusChange = vi.fn().mockResolvedValue(false);
+
+    render(
+      <KanbanBoard
+        skills={[makeSkill({ id: 1, name: "Forward swizzles" })]}
+        track="basic"
+        level={1}
+        onSkillStatusChange={onSkillStatusChange}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Complete drag" }));
+
+    await waitFor(() =>
+      expect(onSkillStatusChange).toHaveBeenCalledWith(1, "completed"),
+    );
+    expect(localStorage.setItem).not.toHaveBeenCalled();
   });
 
   it("ignores drag events without a drop target", async () => {

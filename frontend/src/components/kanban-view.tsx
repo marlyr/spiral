@@ -93,6 +93,7 @@ export function KanbanView({
     );
     try {
       await api.patch(`/skills/${skillId}`, { status: newStatus });
+      return true;
     } catch (error) {
       if (originalStatus !== undefined) {
         setSkills((prev) =>
@@ -102,7 +103,7 @@ export function KanbanView({
         );
       }
       console.error("Failed to update skill status: ", error);
-      return;
+      return false;
     }
   };
 

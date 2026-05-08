@@ -125,7 +125,7 @@ export function KanbanBoard({
   onSkillStatusChange: (
     skillId: number,
     newStatus: SkillStatus,
-  ) => Promise<void>;
+  ) => Promise<boolean>;
 }) {
   const [localSkills, setLocalSkills] = useState<UserSkill[]>(() =>
     loadOrder(skills, { track, level }),
@@ -164,16 +164,28 @@ export function KanbanBoard({
     setDraggingSkillId((event.operation.source?.id as number) ?? null);
   };
 
-  const handleDragEnd: DragEndEvent = (event) => {
+  const markRecentlyDropped = (skillId: number) => {
+    if (recentlyDroppedTimerRef.current !== null) {
+      clearTimeout(recentlyDroppedTimerRef.current);
+    }
+    setRecentlyDropped(skillId);
+    recentlyDroppedTimerRef.current = setTimeout(
+      () => setRecentlyDropped(null),
+      500,
+    );
+  };
+
+  const handleDragEnd: DragEndEvent = async (event) => {
     setDraggingSkillId(null);
 
     if (!event.operation.source || !event.operation.target) {
       // Cancelled — revert to pre-drag order
-      setLocalSkills(
+      const restoredSkills =
         preDragRef.current.length > 0
           ? preDragRef.current
-          : localSkillsRef.current,
-      );
+          : localSkillsRef.current;
+      localSkillsRef.current = restoredSkills;
+      setLocalSkills(restoredSkills);
       return;
     }
 
@@ -186,19 +198,18 @@ export function KanbanBoard({
       ? (event.operation.target.group as SkillStatus)
       : (event.operation.target.id as SkillStatus);
 
-    saveOrder(localSkillsRef.current, { track, level });
-    if (recentlyDroppedTimerRef.current !== null) {
-      clearTimeout(recentlyDroppedTimerRef.current);
-    }
-    setRecentlyDropped(skillId);
-    recentlyDroppedTimerRef.current = setTimeout(
-      () => setRecentlyDropped(null),
-      500,
-    );
-
     if (originalStatus !== finalStatus) {
-      onSkillStatusChange(skillId, finalStatus);
+      let didUpdate = false;
+      try {
+        didUpdate = await onSkillStatusChange(skillId, finalStatus);
+      } catch {
+        didUpdate = false;
+      }
+      if (!didUpdate) return;
     }
+
+    saveOrder(localSkillsRef.current, { track, level });
+    markRecentlyDropped(skillId);
   };
 
   const draggingSkill =
