@@ -9,7 +9,8 @@ export function loadOrder(skills: UserSkill[], level: number): UserSkill[] {
     const ids: number[] = JSON.parse(raw);
     const byId = new Map(skills.map((s) => [s.id, s]));
     const ordered = ids.filter((id) => byId.has(id)).map((id) => byId.get(id)!);
-    const unseen = skills.filter((s) => !ids.includes(s.id));
+    const savedSet = new Set(ids);
+    const unseen = skills.filter((s) => !savedSet.has(s.id));
     return [...ordered, ...unseen];
   } catch {
     return skills;

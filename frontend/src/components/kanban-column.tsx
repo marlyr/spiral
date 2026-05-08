@@ -26,6 +26,7 @@ export function KanbanColumn({
   return (
     <div
       ref={ref}
+      data-testid="kanban-column"
       className="bg-card border border-border rounded-xl flex flex-col overflow-hidden"
     >
       <div

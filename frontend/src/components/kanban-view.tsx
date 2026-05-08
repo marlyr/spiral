@@ -21,18 +21,15 @@ function SkeletonCard() {
 
 function SkeletonColumn() {
   return (
-    <div
-      className="bg-card border border-border rounded-xl p-4 flex flex-col gap-3"
-      style={{ borderTopWidth: "2px", borderTopColor: "var(--border)" }}
-    >
-      <div className="flex items-center justify-between pb-3 border-b border-border">
+    <div className="bg-card border border-border rounded-xl flex flex-col overflow-hidden">
+      <div className="px-4 py-3 flex items-center justify-between bg-muted">
         <div className="flex items-center gap-2">
-          <div className="w-[6px] h-[6px] rounded-full bg-muted animate-pulse" />
-          <div className="h-2.5 bg-muted rounded animate-pulse w-20" />
+          <div className="w-[13px] h-[13px] rounded-sm bg-muted-foreground/20 animate-pulse" />
+          <div className="h-2.5 bg-muted-foreground/20 rounded animate-pulse w-20" />
         </div>
-        <div className="h-2.5 bg-muted rounded animate-pulse w-3" />
+        <div className="h-5 w-6 bg-muted-foreground/20 rounded-full animate-pulse" />
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 p-4">
         <SkeletonCard />
         <SkeletonCard />
       </div>
@@ -74,14 +71,12 @@ export function KanbanView({
     (async () => {
       try {
         const response = await api.get("/skills/");
-        console.log(response);
         if (!Array.isArray(response.data)) {
           setFetchError(true);
           return;
         }
         setSkills(response.data);
       } catch (error) {
-        console.log(error);
         setFetchError(true);
       } finally {
         setIsLoading(false);
@@ -90,7 +85,7 @@ export function KanbanView({
   }, []);
 
   const updateSkillStatus = async (skillId: number, newStatus: SkillStatus) => {
-    const oldSkills = skills;
+    const originalStatus = skills.find((s) => s.id === skillId)?.status;
     setSkills((prevSkills) =>
       prevSkills.map((s) =>
         s.id === skillId ? { ...s, status: newStatus } : s,
@@ -99,7 +94,11 @@ export function KanbanView({
     try {
       await api.patch(`/skills/${skillId}`, { status: newStatus });
     } catch (error) {
-      setSkills(oldSkills);
+      if (originalStatus !== undefined) {
+        setSkills((prev) =>
+          prev.map((s) => (s.id === skillId ? { ...s, status: originalStatus } : s)),
+        );
+      }
       console.error("Failed to update skill status: ", error);
       return;
     }

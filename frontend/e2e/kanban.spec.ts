@@ -61,7 +61,7 @@ async function loginToDashboard(page: Page) {
 
 // Get a kanban column by its label, scoped to a specific level (0-indexed).
 function getColumn(page: Page, label: string, levelIndex = 0): Locator {
-  return page.locator(".rounded-xl.p-4").filter({ hasText: label }).nth(levelIndex);
+  return page.getByTestId("kanban-column").filter({ hasText: label }).nth(levelIndex);
 }
 
 // Simulate a pointer-based drag compatible with dnd-kit's PointerSensor.
@@ -247,8 +247,8 @@ test("dragging a card back to the same column is a no-op (no API call)", async (
   // Drag within the same column (card1 onto card2)
   await dragTo(page, card1, card2);
 
-  // Give any in-flight requests time to fire
-  await page.waitForTimeout(300);
+  // Both cards still in the same column confirms drag settled
+  await expect(getColumn(page, "Not Started").getByRole("button", { name: /^Forward swizzles/ })).toBeVisible();
   expect(apiCalled).toBe(false);
 });
 
