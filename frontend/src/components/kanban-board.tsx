@@ -175,17 +175,28 @@ export function KanbanBoard({
     );
   };
 
+  const rollbackDrag = () => {
+    const restoredSkills =
+      preDragRef.current.length > 0
+        ? preDragRef.current
+        : localSkillsRef.current;
+
+    localSkillsRef.current = restoredSkills;
+    setLocalSkills(restoredSkills);
+
+    if (recentlyDroppedTimerRef.current !== null) {
+      clearTimeout(recentlyDroppedTimerRef.current);
+      recentlyDroppedTimerRef.current = null;
+    }
+    setRecentlyDropped(null);
+  };
+
   const handleDragEnd: DragEndEvent = async (event) => {
     setDraggingSkillId(null);
 
     if (!event.operation.source || !event.operation.target) {
       // Cancelled — revert to pre-drag order
-      const restoredSkills =
-        preDragRef.current.length > 0
-          ? preDragRef.current
-          : localSkillsRef.current;
-      localSkillsRef.current = restoredSkills;
-      setLocalSkills(restoredSkills);
+      rollbackDrag();
       return;
     }
 
@@ -198,6 +209,8 @@ export function KanbanBoard({
       ? (event.operation.target.group as SkillStatus)
       : (event.operation.target.id as SkillStatus);
 
+    markRecentlyDropped(skillId);
+
     if (originalStatus !== finalStatus) {
       let didUpdate = false;
       try {
@@ -205,11 +218,13 @@ export function KanbanBoard({
       } catch {
         didUpdate = false;
       }
-      if (!didUpdate) return;
+      if (!didUpdate) {
+        rollbackDrag();
+        return;
+      }
     }
 
     saveOrder(localSkillsRef.current, { track, level });
-    markRecentlyDropped(skillId);
   };
 
   const draggingSkill =

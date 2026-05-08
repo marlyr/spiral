@@ -225,6 +225,45 @@ describe("KanbanBoard", () => {
     );
   });
 
+  it("starts the drop animation before the status update resolves", async () => {
+    const user = userEvent.setup();
+    let resolveStatusChange!: (value: boolean) => void;
+    const statusChangePromise = new Promise<boolean>((resolve) => {
+      resolveStatusChange = resolve;
+    });
+    const onSkillStatusChange = vi.fn(() => statusChangePromise);
+
+    render(
+      <KanbanBoard
+        skills={[makeSkill({ id: 1, name: "Forward swizzles" })]}
+        track="basic"
+        level={1}
+        onSkillStatusChange={onSkillStatusChange}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Complete drag" }));
+
+    await waitFor(() =>
+      expect(screen.getByText("Forward swizzles").parentElement).toHaveClass(
+        "card-drop-spring",
+      ),
+    );
+    expect(localStorage.setItem).not.toHaveBeenCalled();
+
+    await act(async () => {
+      resolveStatusChange(true);
+      await statusChangePromise;
+    });
+
+    await waitFor(() =>
+      expect(localStorage.setItem).toHaveBeenCalledWith(
+        "spiral-skill-order-basic-1",
+        "[1]",
+      ),
+    );
+  });
+
   it("does not save order when a status update fails", async () => {
     const user = userEvent.setup();
     const onSkillStatusChange = vi.fn().mockResolvedValue(false);
@@ -242,6 +281,43 @@ describe("KanbanBoard", () => {
 
     await waitFor(() =>
       expect(onSkillStatusChange).toHaveBeenCalledWith(1, "completed"),
+    );
+    expect(localStorage.setItem).not.toHaveBeenCalled();
+  });
+
+  it("rolls back the optimistic move when a status update fails", async () => {
+    const user = userEvent.setup();
+    const onSkillStatusChange = vi.fn().mockResolvedValue(false);
+
+    render(
+      <KanbanBoard
+        skills={[makeSkill({ id: 1, name: "Forward swizzles" })]}
+        track="basic"
+        level={1}
+        onSkillStatusChange={onSkillStatusChange}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Start drag" }));
+    act(() => {
+      dndMocks.monitor?.onDragOver({
+        operation: {
+          source: { id: 1 },
+          target: { id: "completed" },
+        },
+      });
+    });
+
+    expect(
+      within(getColumn("Completed")).getByText("Forward swizzles"),
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Complete drag" }));
+
+    await waitFor(() =>
+      expect(
+        within(getColumn("Not Started")).getByText("Forward swizzles"),
+      ).toBeInTheDocument(),
     );
     expect(localStorage.setItem).not.toHaveBeenCalled();
   });
