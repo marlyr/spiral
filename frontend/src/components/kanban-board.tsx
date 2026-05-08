@@ -37,10 +37,15 @@ function KanbanBoardContent({
   setLocalSkills: React.Dispatch<React.SetStateAction<UserSkill[]>>;
   recentlyDropped: number | null;
 }) {
-  const lastDragOver = useRef<{ source: number; target: string | number } | null>(null);
+  const lastDragOver = useRef<{
+    source: number;
+    target: string | number;
+  } | null>(null);
 
   useDragDropMonitor({
-    onDragStart: () => { lastDragOver.current = null; },
+    onDragStart: () => {
+      lastDragOver.current = null;
+    },
     onDragOver: (event) => {
       const source = event.operation.source;
       const target = event.operation.target;
@@ -52,7 +57,8 @@ function KanbanBoardContent({
       if (
         lastDragOver.current?.source === sourceId &&
         lastDragOver.current?.target === target.id
-      ) return;
+      )
+        return;
       lastDragOver.current = { source: sourceId, target: target.id };
 
       setLocalSkills((prev) => {
@@ -109,10 +115,12 @@ function KanbanBoardContent({
 
 export function KanbanBoard({
   skills,
+  track,
   level,
   onSkillStatusChange,
 }: {
   skills: UserSkill[];
+  track: string;
   level: number;
   onSkillStatusChange: (
     skillId: number,
@@ -120,7 +128,7 @@ export function KanbanBoard({
   ) => Promise<void>;
 }) {
   const [localSkills, setLocalSkills] = useState<UserSkill[]>(() =>
-    loadOrder(skills, level),
+    loadOrder(skills, { track, level }),
   );
   const [draggingSkillId, setDraggingSkillId] = useState<number | null>(null);
   const [recentlyDropped, setRecentlyDropped] = useState<number | null>(null);
@@ -129,7 +137,9 @@ export function KanbanBoard({
   const preDragRef = useRef<UserSkill[]>([]);
   // Always-current ref so handleDragEnd reads latest localSkills
   const localSkillsRef = useRef(localSkills);
-  const recentlyDroppedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const recentlyDroppedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
 
   useEffect(() => {
     return () => {
@@ -176,12 +186,15 @@ export function KanbanBoard({
       ? (event.operation.target.group as SkillStatus)
       : (event.operation.target.id as SkillStatus);
 
-    saveOrder(localSkillsRef.current, level);
+    saveOrder(localSkillsRef.current, { track, level });
     if (recentlyDroppedTimerRef.current !== null) {
       clearTimeout(recentlyDroppedTimerRef.current);
     }
     setRecentlyDropped(skillId);
-    recentlyDroppedTimerRef.current = setTimeout(() => setRecentlyDropped(null), 500);
+    recentlyDroppedTimerRef.current = setTimeout(
+      () => setRecentlyDropped(null),
+      500,
+    );
 
     if (originalStatus !== finalStatus) {
       onSkillStatusChange(skillId, finalStatus);

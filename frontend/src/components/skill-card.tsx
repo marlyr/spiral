@@ -51,8 +51,8 @@ export function SkillCard({
             transition: isDragSource
               ? "none"
               : isRecentlyDropped
-              ? "opacity 220ms ease, border-color 150ms ease, box-shadow 150ms ease"
-              : "transform 350ms cubic-bezier(0.34,1.56,0.64,1), opacity 220ms ease, border-color 150ms ease, box-shadow 150ms ease",
+                ? "opacity 220ms ease, border-color 150ms ease, box-shadow 150ms ease"
+                : "transform 350ms cubic-bezier(0.34,1.56,0.64,1), opacity 220ms ease, border-color 150ms ease, box-shadow 150ms ease",
           }}
         >
           <p

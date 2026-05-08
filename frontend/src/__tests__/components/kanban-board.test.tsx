@@ -77,7 +77,14 @@ function getColumn(label: string) {
 
 describe("KanbanBoard", () => {
   it("renders the expected columns", () => {
-    render(<KanbanBoard skills={[]} level={1} onSkillStatusChange={vi.fn()} />);
+    render(
+      <KanbanBoard
+        skills={[]}
+        track="basic"
+        level={1}
+        onSkillStatusChange={vi.fn()}
+      />,
+    );
 
     expect(screen.getByText("Not Started")).toBeInTheDocument();
     expect(screen.getByText("Working On")).toBeInTheDocument();
@@ -92,6 +99,7 @@ describe("KanbanBoard", () => {
           makeSkill({ id: 2, name: "Forward stroking", status: "working_on" }),
           makeSkill({ id: 3, name: "Two-foot spin", status: "completed" }),
         ]}
+        track="basic"
         level={1}
         onSkillStatusChange={vi.fn()}
       />,
@@ -115,6 +123,7 @@ describe("KanbanBoard", () => {
     render(
       <KanbanBoard
         skills={[makeSkill({ id: 1, name: "Forward swizzles" })]}
+        track="basic"
         level={1}
         onSkillStatusChange={onSkillStatusChange}
       />,
@@ -132,6 +141,7 @@ describe("KanbanBoard", () => {
     render(
       <KanbanBoard
         skills={[makeSkill({ id: 1, name: "Forward swizzles" })]}
+        track="basic"
         level={1}
         onSkillStatusChange={onSkillStatusChange}
       />,

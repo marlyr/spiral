@@ -17,16 +17,70 @@ const userEmail = "skater@example.com";
 const validPassword = "password123";
 
 const defaultSkills: Skill[] = [
-  { id: 1, name: "Forward swizzles", track: "basic", level: 1, category: "foundation", bonus: false, notes: "Keep knees soft", status: "not_started" },
-  { id: 2, name: "Forward stroking", track: "basic", level: 1, category: "edge", bonus: false, notes: null, status: "working_on" },
-  { id: 3, name: "Two-foot spin", track: "basic", level: 2, category: "spin", bonus: false, notes: "Stay centered", status: "completed" },
+  {
+    id: 1,
+    name: "Forward swizzles",
+    track: "basic",
+    level: 1,
+    category: "foundation",
+    bonus: false,
+    notes: "Keep knees soft",
+    status: "not_started",
+  },
+  {
+    id: 2,
+    name: "Forward stroking",
+    track: "basic",
+    level: 1,
+    category: "edge",
+    bonus: false,
+    notes: null,
+    status: "working_on",
+  },
+  {
+    id: 3,
+    name: "Two-foot spin",
+    track: "basic",
+    level: 2,
+    category: "spin",
+    bonus: false,
+    notes: "Stay centered",
+    status: "completed",
+  },
 ];
 
 // Skills for tests that need multiple cards in the same column.
 const multiCardSkills: Skill[] = [
-  { id: 1, name: "Forward swizzles", track: "basic", level: 1, category: "foundation", bonus: false, notes: null, status: "not_started" },
-  { id: 2, name: "Backward swizzles", track: "basic", level: 1, category: "foundation", bonus: false, notes: null, status: "not_started" },
-  { id: 3, name: "Forward stroking", track: "basic", level: 1, category: "edge", bonus: false, notes: null, status: "working_on" },
+  {
+    id: 1,
+    name: "Forward swizzles",
+    track: "basic",
+    level: 1,
+    category: "foundation",
+    bonus: false,
+    notes: null,
+    status: "not_started",
+  },
+  {
+    id: 2,
+    name: "Backward swizzles",
+    track: "basic",
+    level: 1,
+    category: "foundation",
+    bonus: false,
+    notes: null,
+    status: "not_started",
+  },
+  {
+    id: 3,
+    name: "Forward stroking",
+    track: "basic",
+    level: 1,
+    category: "edge",
+    bonus: false,
+    notes: null,
+    status: "working_on",
+  },
 ];
 
 async function mockApi(page: Page, initialSkills: Skill[] = defaultSkills) {
@@ -44,7 +98,9 @@ async function mockApi(page: Page, initialSkills: Skill[] = defaultSkills) {
     }
     const id = Number(route.request().url().split("/").pop());
     const body = route.request().postDataJSON() as { status: SkillStatus };
-    skills = skills.map((s) => (s.id === id ? { ...s, status: body.status } : s));
+    skills = skills.map((s) =>
+      s.id === id ? { ...s, status: body.status } : s,
+    );
     return route.fulfill({ json: { id, status: body.status } });
   });
 }
@@ -61,7 +117,10 @@ async function loginToDashboard(page: Page) {
 
 // Get a kanban column by its label, scoped to a specific level (0-indexed).
 function getColumn(page: Page, label: string, levelIndex = 0): Locator {
-  return page.getByTestId("kanban-column").filter({ hasText: label }).nth(levelIndex);
+  return page
+    .getByTestId("kanban-column")
+    .filter({ hasText: label })
+    .nth(levelIndex);
 }
 
 // Simulate a pointer-based drag compatible with dnd-kit's PointerSensor.
@@ -97,9 +156,15 @@ test("skills appear in the correct columns", async ({ page }) => {
   const workingOn = getColumn(page, "Working On");
   const completed = getColumn(page, "Completed");
 
-  await expect(notStarted.getByRole("button", { name: /Forward swizzles/ })).toBeVisible();
-  await expect(workingOn.getByRole("button", { name: /Forward stroking/ })).toBeVisible();
-  await expect(completed.getByRole("button", { name: /Two-foot spin/ })).not.toBeVisible(); // level 2
+  await expect(
+    notStarted.getByRole("button", { name: /Forward swizzles/ }),
+  ).toBeVisible();
+  await expect(
+    workingOn.getByRole("button", { name: /Forward stroking/ }),
+  ).toBeVisible();
+  await expect(
+    completed.getByRole("button", { name: /Two-foot spin/ }),
+  ).not.toBeVisible(); // level 2
 });
 
 test("columns display the correct skill counts", async ({ page }) => {
@@ -134,9 +199,9 @@ test("modal shows existing notes for the skill", async ({ page }) => {
 
   await page.getByRole("button", { name: /Forward swizzles/ }).click();
 
-  await expect(
-    page.getByRole("textbox", { name: /notes/i }),
-  ).toHaveValue("Keep knees soft");
+  await expect(page.getByRole("textbox", { name: /notes/i })).toHaveValue(
+    "Keep knees soft",
+  );
 });
 
 test("modal closes when the Close button is clicked", async ({ page }) => {
@@ -175,14 +240,20 @@ test("Collapse All hides all skill cards and Expand All shows them again", async
   await mockApi(page);
   await loginToDashboard(page);
 
-  await expect(page.getByRole("button", { name: /Forward swizzles/ })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: /Forward swizzles/ }),
+  ).toBeVisible();
 
   await page.getByRole("button", { name: "Collapse All" }).click();
   await expect(page.getByRole("button", { name: "Expand All" })).toBeVisible();
-  await expect(page.getByRole("button", { name: /Forward swizzles/ })).not.toBeVisible();
+  await expect(
+    page.getByRole("button", { name: /Forward swizzles/ }),
+  ).not.toBeVisible();
 
   await page.getByRole("button", { name: "Expand All" }).click();
-  await expect(page.getByRole("button", { name: /Forward swizzles/ })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: /Forward swizzles/ }),
+  ).toBeVisible();
 });
 
 // ── Error state ────────────────────────────────────────────────────────────
@@ -224,8 +295,14 @@ test("dragging a card to a new column calls the status API and moves the card", 
   expect(patch.postDataJSON()).toMatchObject({ status: "completed" });
 
   // Card should now be in the Completed column
-  await expect(completedCol.getByRole("button", { name: /Forward swizzles/ })).toBeVisible();
-  await expect(getColumn(page, "Not Started").getByRole("button", { name: /Forward swizzles/ })).not.toBeVisible();
+  await expect(
+    completedCol.getByRole("button", { name: /Forward swizzles/ }),
+  ).toBeVisible();
+  await expect(
+    getColumn(page, "Not Started").getByRole("button", {
+      name: /Forward swizzles/,
+    }),
+  ).not.toBeVisible();
 });
 
 test("dragging a card back to the same column is a no-op (no API call)", async ({
@@ -248,7 +325,11 @@ test("dragging a card back to the same column is a no-op (no API call)", async (
   await dragTo(page, card1, card2);
 
   // Both cards still in the same column confirms drag settled
-  await expect(getColumn(page, "Not Started").getByRole("button", { name: /^Forward swizzles/ })).toBeVisible();
+  await expect(
+    getColumn(page, "Not Started").getByRole("button", {
+      name: /^Forward swizzles/,
+    }),
+  ).toBeVisible();
   expect(apiCalled).toBe(false);
 });
 
@@ -261,7 +342,10 @@ test("card order saved in localStorage is restored on page reload", async ({
 
   // Prime localStorage before the page boots: Backward swizzles (id=2) before Forward swizzles (id=1)
   await page.addInitScript(() => {
-    localStorage.setItem("spiral-skill-order-1", JSON.stringify([2, 1, 3]));
+    localStorage.setItem(
+      "spiral-skill-order-basic-1",
+      JSON.stringify([2, 1, 3]),
+    );
   });
 
   await loginToDashboard(page);
