@@ -21,18 +21,15 @@ function SkeletonCard() {
 
 function SkeletonColumn() {
   return (
-    <div
-      className="bg-card border border-border rounded-xl p-4 flex flex-col gap-3"
-      style={{ borderTopWidth: "2px", borderTopColor: "var(--border)" }}
-    >
-      <div className="flex items-center justify-between pb-3 border-b border-border">
+    <div className="bg-card border border-border rounded-xl flex flex-col overflow-hidden">
+      <div className="px-4 py-3 flex items-center justify-between bg-muted">
         <div className="flex items-center gap-2">
-          <div className="w-[6px] h-[6px] rounded-full bg-muted animate-pulse" />
-          <div className="h-2.5 bg-muted rounded animate-pulse w-20" />
+          <div className="w-[13px] h-[13px] rounded-sm bg-muted-foreground/20 animate-pulse" />
+          <div className="h-2.5 bg-muted-foreground/20 rounded animate-pulse w-20" />
         </div>
-        <div className="h-2.5 bg-muted rounded animate-pulse w-3" />
+        <div className="h-5 w-6 bg-muted-foreground/20 rounded-full animate-pulse" />
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 p-4">
         <SkeletonCard />
         <SkeletonCard />
       </div>
@@ -74,14 +71,12 @@ export function KanbanView({
     (async () => {
       try {
         const response = await api.get("/skills/");
-        console.log(response);
         if (!Array.isArray(response.data)) {
           setFetchError(true);
           return;
         }
         setSkills(response.data);
-      } catch (error) {
-        console.log(error);
+      } catch {
         setFetchError(true);
       } finally {
         setIsLoading(false);
@@ -90,7 +85,7 @@ export function KanbanView({
   }, []);
 
   const updateSkillStatus = async (skillId: number, newStatus: SkillStatus) => {
-    const oldSkills = skills;
+    const originalStatus = skills.find((s) => s.id === skillId)?.status;
     setSkills((prevSkills) =>
       prevSkills.map((s) =>
         s.id === skillId ? { ...s, status: newStatus } : s,
@@ -98,10 +93,17 @@ export function KanbanView({
     );
     try {
       await api.patch(`/skills/${skillId}`, { status: newStatus });
+      return true;
     } catch (error) {
-      setSkills(oldSkills);
+      if (originalStatus !== undefined) {
+        setSkills((prev) =>
+          prev.map((s) =>
+            s.id === skillId ? { ...s, status: originalStatus } : s,
+          ),
+        );
+      }
       console.error("Failed to update skill status: ", error);
-      return;
+      return false;
     }
   };
 
@@ -113,37 +115,62 @@ export function KanbanView({
           levels.map((level) => <SkeletonLevel key={level} />)
         ) : (
           <>
-            {levels.map((level) => (
-              <Collapsible
-                key={level}
-                className="rounded-xl border border-border mb-3 overflow-hidden shadow-md bg-card"
-                open={openLevels.has(level)}
-                onOpenChange={(isOpen) => onLevelToggle(isOpen, level)}
-              >
-                <CollapsibleTrigger className="w-full flex items-center justify-between px-4 py-3 bg-card border-b border-border hover:bg-muted/30 transition-colors">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[var(--text2)]">
-                      Level {level}
-                    </span>
-                    <span className="text-[10px] text-muted-foreground">
-                      ({skills.filter((s) => s.level === level).length})
-                    </span>
-                  </div>
-                  <ChevronRight
-                    className={`w-4 h-4 text-muted-foreground transition-transform ${openLevels.has(level) ? "rotate-90" : ""}`}
-                  />
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <div className="p-3 bg-card">
-                    <KanbanBoard
-                      key={level}
-                      skills={skills.filter((s) => s.level === level)}
-                      onSkillStatusChange={updateSkillStatus}
-                    />
-                  </div>
-                </CollapsibleContent>
-              </Collapsible>
-            ))}
+            {levels.map((level) => {
+              const levelSkills = skills.filter((s) => s.level === level);
+              const track =
+                levelSkills[0]?.track ?? skills[0]?.track ?? "unknown";
+              const pct =
+                levelSkills.length > 0
+                  ? (levelSkills.filter((s) => s.status === "completed")
+                      .length /
+                      levelSkills.length) *
+                    100
+                  : 0;
+              return (
+                <Collapsible
+                  key={level}
+                  className="rounded-xl border border-border mb-3 overflow-hidden shadow-md bg-card"
+                  open={openLevels.has(level)}
+                  onOpenChange={(isOpen) => onLevelToggle(isOpen, level)}
+                >
+                  <CollapsibleTrigger className="w-full flex items-center justify-between px-4 py-3 bg-card border-b border-border hover:bg-muted/30 transition-colors">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[var(--text2)]">
+                        Level {level}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground">
+                        ({levelSkills.length})
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-20 h-1.5 bg-border rounded-full overflow-hidden">
+                        <div
+                          className="h-full rounded-full transition-[width] duration-500 ease-out"
+                          style={{
+                            width: `${pct}%`,
+                            backgroundColor: "var(--sage)",
+                          }}
+                        />
+                      </div>
+                      <ChevronRight
+                        className={`w-4 h-4 text-muted-foreground transition-transform ${openLevels.has(level) ? "rotate-90" : ""}`}
+                      />
+                    </div>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <div className="p-3 bg-card">
+                      <KanbanBoard
+                        key={`${track}-${level}`}
+                        track={track}
+                        level={level}
+                        skills={levelSkills}
+                        onSkillStatusChange={updateSkillStatus}
+                      />
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+              );
+            })}
           </>
         )}
       </div>

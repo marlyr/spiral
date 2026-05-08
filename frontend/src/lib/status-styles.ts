@@ -1,25 +1,27 @@
 import type { SkillStatus } from "@/types";
+import { Clock, Zap, CheckCircle2 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 export const statusStyles: Record<
   SkillStatus,
-  { label: string; dotColor: string; bg: string; color: string }
+  { label: string; bg: string; color: string; icon: LucideIcon }
 > = {
   not_started: {
     label: "Not Started",
-    dotColor: "bg-[#e0dbd2]",
-    bg: "#f0ede8",
-    color: "#8a8078",
+    bg: "var(--badge-not-started-bg)",
+    color: "var(--badge-not-started-color)",
+    icon: Clock,
   },
   working_on: {
     label: "Working On",
-    dotColor: "bg-[#7c85c8]",
-    bg: "#eaecf8",
-    color: "#5a63a8",
+    bg: "var(--badge-working-on-bg)",
+    color: "var(--badge-working-on-color)",
+    icon: Zap,
   },
   completed: {
     label: "Completed",
-    dotColor: "bg-[#6b8f74]",
-    bg: "#eaf2ec",
-    color: "#6b8f74",
+    bg: "var(--badge-completed-bg)",
+    color: "var(--badge-completed-color)",
+    icon: CheckCircle2,
   },
 };

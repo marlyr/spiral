@@ -93,6 +93,26 @@
   --warm-bg: #f6ede6;
   --sage: #6b8f74;
   --sage-bg: #eaf2ec;
+
+  /* Category badge colors */
+  --badge-jump-bg: #eeddd0;
+  --badge-jump-color: #a0612e;
+  --badge-spin-bg: #d4e6f6;
+  --badge-spin-color: #3a6aa8;
+  --badge-edge-bg: #d6ecdb;
+  --badge-edge-color: #4d7a57;
+  --badge-footwork-bg: #e2d8f0;
+  --badge-footwork-color: #6550a0;
+  --badge-foundation-bg: #f0d8db;
+  --badge-foundation-color: #a05084;
+
+  /* Status badge colors */
+  --badge-not-started-bg: #f0ede8;
+  --badge-not-started-color: #8a8078;
+  --badge-working-on-bg: #eaecf8;
+  --badge-working-on-color: #5a63a8;
+  --badge-completed-bg: #eaf2ec;
+  --badge-completed-color: #6b8f74;
 }
 
 .dark {
@@ -396,6 +416,16 @@
   opacity: 0.9;
 }
 
+@keyframes card-drop-spring {
+  from {
+    transform: scale(0.9) translateY(4px);
+  }
+}
+
+.card-drop-spring {
+  animation: card-drop-spring 350ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -407,7 +437,8 @@
   .landing-track-card-bounced,
   .landing-kanban-card-entering,
   .landing-kanban-card-exiting,
-  .landing-note-caret {
+  .landing-note-caret,
+  .card-drop-spring {
     animation: none;
     opacity: 1;
     transform: none;

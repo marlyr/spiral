@@ -1,6 +1,6 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { KanbanBoard } from "@/components/kanban-board";
 import { makeSkill } from "@/test-utils/fixtures";
 
@@ -8,6 +8,11 @@ vi.mock("@/lib/supabase", async () => {
   const { createMockSupabase } = await import("@/test-utils/mock-supabase");
   return { supabase: createMockSupabase().supabase };
 });
+
+vi.mock("@dnd-kit/react/sortable", () => ({
+  useSortable: () => ({ ref: vi.fn(), isDragSource: false }),
+  isSortable: () => false,
+}));
 
 vi.mock("@dnd-kit/react", () => ({
   DragDropProvider: ({
@@ -51,7 +56,11 @@ vi.mock("@dnd-kit/react", () => ({
       </button>
     </div>
   ),
-  useDraggable: () => ({ ref: vi.fn() }),
+  DragOverlay: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
+  useDragDropMonitor: vi.fn(),
+  useDraggable: () => ({ ref: vi.fn(), isDragSource: false }),
   useDroppable: () => ({ ref: vi.fn() }),
 }));
 
@@ -67,8 +76,26 @@ function getColumn(label: string) {
 }
 
 describe("KanbanBoard", () => {
+  beforeEach(() => {
+    vi.stubGlobal("localStorage", {
+      getItem: vi.fn(() => null),
+      setItem: vi.fn(),
+    });
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
   it("renders the expected columns", () => {
-    render(<KanbanBoard skills={[]} onSkillStatusChange={vi.fn()} />);
+    render(
+      <KanbanBoard
+        skills={[]}
+        track="basic"
+        level={1}
+        onSkillStatusChange={vi.fn()}
+      />,
+    );
 
     expect(screen.getByText("Not Started")).toBeInTheDocument();
     expect(screen.getByText("Working On")).toBeInTheDocument();
@@ -83,6 +110,8 @@ describe("KanbanBoard", () => {
           makeSkill({ id: 2, name: "Forward stroking", status: "working_on" }),
           makeSkill({ id: 3, name: "Two-foot spin", status: "completed" }),
         ]}
+        track="basic"
+        level={1}
         onSkillStatusChange={vi.fn()}
       />,
     );
@@ -100,11 +129,13 @@ describe("KanbanBoard", () => {
 
   it("calls the status change handler when a skill is dropped onto a column", async () => {
     const user = userEvent.setup();
-    const onSkillStatusChange = vi.fn();
+    const onSkillStatusChange = vi.fn().mockResolvedValue(true);
 
     render(
       <KanbanBoard
         skills={[makeSkill({ id: 1, name: "Forward swizzles" })]}
+        track="basic"
+        level={1}
         onSkillStatusChange={onSkillStatusChange}
       />,
     );
@@ -114,6 +145,27 @@ describe("KanbanBoard", () => {
     expect(onSkillStatusChange).toHaveBeenCalledWith(1, "completed");
   });
 
+  it("does not save order when a status update fails", async () => {
+    const user = userEvent.setup();
+    const onSkillStatusChange = vi.fn().mockResolvedValue(false);
+
+    render(
+      <KanbanBoard
+        skills={[makeSkill({ id: 1, name: "Forward swizzles" })]}
+        track="basic"
+        level={1}
+        onSkillStatusChange={onSkillStatusChange}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Complete drag" }));
+
+    await waitFor(() =>
+      expect(onSkillStatusChange).toHaveBeenCalledWith(1, "completed"),
+    );
+    expect(localStorage.setItem).not.toHaveBeenCalled();
+  });
+
   it("ignores drag events without a drop target", async () => {
     const user = userEvent.setup();
     const onSkillStatusChange = vi.fn();
@@ -121,6 +173,8 @@ describe("KanbanBoard", () => {
     render(
       <KanbanBoard
         skills={[makeSkill({ id: 1, name: "Forward swizzles" })]}
+        track="basic"
+        level={1}
         onSkillStatusChange={onSkillStatusChange}
       />,
     );
