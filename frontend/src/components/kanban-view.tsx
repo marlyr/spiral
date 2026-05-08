@@ -112,7 +112,12 @@ export function KanbanView({
           levels.map((level) => <SkeletonLevel key={level} />)
         ) : (
           <>
-            {levels.map((level) => (
+            {levels.map((level) => {
+              const levelSkills = skills.filter((s) => s.level === level);
+              const pct = levelSkills.length > 0
+                ? (levelSkills.filter((s) => s.status === "completed").length / levelSkills.length) * 100
+                : 0;
+              return (
               <Collapsible
                 key={level}
                 className="rounded-xl border border-border mb-3 overflow-hidden shadow-md bg-card"
@@ -125,12 +130,20 @@ export function KanbanView({
                       Level {level}
                     </span>
                     <span className="text-[10px] text-muted-foreground">
-                      ({skills.filter((s) => s.level === level).length})
+                      ({levelSkills.length})
                     </span>
                   </div>
-                  <ChevronRight
-                    className={`w-4 h-4 text-muted-foreground transition-transform ${openLevels.has(level) ? "rotate-90" : ""}`}
-                  />
+                  <div className="flex items-center gap-3">
+                    <div className="w-20 h-1.5 bg-border rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-[width] duration-500 ease-out"
+                        style={{ width: `${pct}%`, backgroundColor: "var(--sage)" }}
+                      />
+                    </div>
+                    <ChevronRight
+                      className={`w-4 h-4 text-muted-foreground transition-transform ${openLevels.has(level) ? "rotate-90" : ""}`}
+                    />
+                  </div>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                   <div className="p-3 bg-card">
@@ -143,7 +156,8 @@ export function KanbanView({
                   </div>
                 </CollapsibleContent>
               </Collapsible>
-            ))}
+              );
+            })}
           </>
         )}
       </div>
