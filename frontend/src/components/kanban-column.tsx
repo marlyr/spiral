@@ -2,13 +2,6 @@ import type { UserSkill, SkillStatus } from "@/types";
 import { SkillCard } from "@/components/skill-card";
 import { statusStyles as statusConfig } from "@/lib/status-styles";
 import { useDroppable } from "@dnd-kit/react";
-import { Clock, Zap, CheckCircle2 } from "lucide-react";
-
-const statusIcons = {
-  not_started: Clock,
-  working_on: Zap,
-  completed: CheckCircle2,
-};
 
 export function KanbanColumn({
   skills,
@@ -20,8 +13,7 @@ export function KanbanColumn({
   recentlyDropped?: number | null;
 }) {
   const { ref } = useDroppable({ id: status });
-  const { label, bg, color } = statusConfig[status];
-  const Icon = statusIcons[status];
+  const { label, bg, color, icon: Icon } = statusConfig[status];
 
   return (
     <div
