@@ -18,8 +18,34 @@ vi.mock("@dnd-kit/react/sortable", () => ({
 }));
 
 vi.mock("@dnd-kit/react", () => ({
-  DragDropProvider: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
+  DragDropProvider: ({
+    children,
+    onDragEnd,
+  }: {
+    children: React.ReactNode;
+    onDragEnd?: (event: {
+      operation: {
+        source?: { id: number };
+        target?: { id: string };
+      };
+    }) => void;
+  }) => (
+    <div>
+      {children}
+      <button
+        type="button"
+        onClick={() =>
+          onDragEnd?.({
+            operation: {
+              source: { id: 1 },
+              target: { id: "completed" },
+            },
+          })
+        }
+      >
+        Complete drag
+      </button>
+    </div>
   ),
   DragOverlay: ({ children }: { children: React.ReactNode }) => (
     <div>{children}</div>
@@ -63,6 +89,43 @@ describe("KanbanView", () => {
     render(<KanbanView {...defaultProps} />);
 
     expect(await screen.findByText("Something went wrong")).toBeInTheDocument();
+  });
+
+  it("updates skill status through the API after a completed drag", async () => {
+    const user = userEvent.setup();
+    const patchHandler = vi.fn(() =>
+      HttpResponse.json({ id: 1, status: "completed" }),
+    );
+    server.use(http.patch("http://localhost:3000/skills/:id", patchHandler));
+
+    render(<KanbanView {...defaultProps} />);
+
+    expect(await screen.findByText("Forward swizzles")).toBeInTheDocument();
+
+    await user.click(
+      screen.getAllByRole("button", { name: "Complete drag" })[0],
+    );
+
+    expect(patchHandler).toHaveBeenCalled();
+  });
+
+  it("rolls back status when the status API fails", async () => {
+    const user = userEvent.setup();
+    server.use(
+      http.patch("http://localhost:3000/skills/:id", () =>
+        HttpResponse.json({ message: "Failed" }, { status: 500 }),
+      ),
+    );
+
+    render(<KanbanView {...defaultProps} />);
+
+    expect(await screen.findByText("Forward swizzles")).toBeInTheDocument();
+
+    await user.click(
+      screen.getAllByRole("button", { name: "Complete drag" })[0],
+    );
+
+    expect(await screen.findByText("Forward swizzles")).toBeInTheDocument();
   });
 
   it("toggles all levels between collapsed and expanded", async () => {
